@@ -78,6 +78,11 @@ public class BonCommande implements Serializable {
     public void setPrestataire(Prestataire prestataire) {
         this.prestataire = prestataire;
     }
+
+    @Override
+    public String toString() {
+        return "BonCommande{" + "version=" + version + ", id=" + id + ", dateCommande=" + dateCommande + ", etat=" + etat + '}';
+    }
     
     
 

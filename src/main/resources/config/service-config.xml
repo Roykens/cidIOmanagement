@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Configuration de la couche service -->
+   
+    <bean id="IDonneeService" class="com.cid.cidiomanagement.service.impl.DonneeServiceImpl">
+        <property name="categorieDao" ref="ICategorieDao" />       
+        <property name="articleDao" ref="IArticleDao" /> 
+        
+    </bean>
+    <bean id="IUtilisateurService" class="com.cid.cidiomanagement.service.impl.UtilisateurServiceImpl">
+        <property name="utilisateurDao" ref="IUtilisateurDao" />     
+    </bean>
+     <bean id="IPrestataireService" class="com.cid.cidiomanagement.service.impl.PrestataireServiceImpl">
+        <property name="prestataireDao" ref="IPrestataireDao" />     
+    </bean>
+    <bean id="ICommandeService" class="com.cid.cidiomanagement.service.impl.CommandeServiceImpl">
+        <property name="bonCommandeDao" ref="IBonCommandeDao" />   
+        <property name="commandeDao" ref="ICommandeDao" />     
+    </bean>
+
+</beans>

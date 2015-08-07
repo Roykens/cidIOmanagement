@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Gestion des Categories </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="../css/corps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/gif" href="../image/logo.gif" />
+    </h:head>
+    <h:body>
+        <div>
+            <ui:include src="../menu/menu.xhtml" />
+        </div>
+        <div id="conten">
+            <h:form id="list">
+                <p:contextMenu for="bonTable">     
+                    <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"   />
+                    <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"/> 
+                </p:contextMenu>
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                <p:dataTable  var="bon" id="bonTable" value="#{commandeBean.bonCommandes}" selection="#{commandeBean.bonCommande}" selectionMode="single" rowKey="#{bon.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+
+                    <f:facet name="header">  
+                        Liste des Bons de Commandes
+                    </f:facet> 
+
+                    <p:column headerText="Date" filterBy="#{bon.dateCommande}" sortBy="#{bon.dateCommande}">
+                        <h:outputText value="#{bon.dateCommande}" />  
+                    </p:column>  
+
+                    <p:column headerText="Prestataire" filterBy="#{bon.prestataire}" sortBy="#{bon.dateCommande}">  
+                        <h:outputText value="#{bon.prestataire}" />  
+                    </p:column>
+
+                    <p:column headerText="Articles" >  
+                        <p:commandButton  id="a" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
+                            <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
+                        </p:commandButton>
+                        <p:tooltip for="a" value="cliquez ici pour ajouter des commandes à ce bon"/>
+                    </p:column>
+                    <p:column headerText="Imprimer" >  
+                        <p:commandButton  id="q" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
+                            <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
+                        </p:commandButton>
+                        <p:tooltip for="q" value="cliquez ici pour imprimer ce bon de commande"/>
+                    </p:column>
+
+                    <f:facet name="footer">  
+                        <p:commandButton value="Ajouter un Bon de Commande" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:bonTable" /> 
+                    </f:facet> 
+                </p:dataTable> 
+            </h:form>
+
+
+            <p:dialog modal="true" header="Ajouter des commandes au bon de commande" widgetVar="dlgArticles" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
+                <h:form id="formUpdate">    
+                    <p:growl id="growl1" showDetail="true" /> 
+
+                    <h:panelGrid  class="rightPosition"  id="displayUpdate" columns="2">                                        
+
+
+
+                        <h:outputText value="Articles"/>
+                        <p:selectOneMenu id="art" value="#{commandeBean.nomArticle}" required="true" style="width:100%">
+                            <f:selectItems value="#{commandeBean.articles}" />  
+                        </p:selectOneMenu>
+                        <h:outputText value="Quantité"/> 
+                        <p:inputText  id="qt" value="#{commandeBean.commande.nombre}" required="true"/> 
+
+                        <f:facet name="footer"> <br/>  
+                            <p:commandButton value="Ajouter" action="#{commandeBean.addCommande()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":articles:articleTable" />  
+                        </f:facet>
+                    </h:panelGrid>
+                </h:form>
+                <p:separator/>
+
+                <h:form id="articles">
+
+                    <p:dataTable value="#{commandeBean.commandes}" var="item" id="articleTable" rowKey="#{item.id}" paginator="true" scrollable="true" scrollHeight="150" emptyMessage="Aucune commande" paginatorPosition="bottom" >
+                        <f:facet name="header">  
+                            Liste des Articles
+                        </f:facet>
+                        <p:column headerText="Article" >
+                            <h:outputText value="#{item.article}" />  
+                        </p:column> 
+                        <p:column headerText="Quantité" >
+                            <h:outputText value="#{item.nombre}" />  
+                        </p:column> 
+                        
+                        
+                        <f:facet name="footer">  
+                            <p:commandButton value="Enregistrer Commande" action="#{commandeBean.finirBon()}" oncomplete="PF('dlgArticles').hide()"/>  
+                        </f:facet>
+                    </p:dataTable>
+
+                </h:form>
+
+
+                <h:inputHidden value="#{commandeBean.bonCommande.id}"  />
+            </p:dialog>
+
+
+            <p:dialog id="save" header="Ajouter un article" widgetVar="ajouter_dialog"   showEffect="clip" hideEffect="explode" modal="true"> 
+                <h:form id ="saveform">
+                    <h:panelGrid id="display" columns="2" > 
+                        <p:outputLabel for="popup" value="Date:" />
+                        <p:calendar id="popup" value="#{commandeBean.bonCommande.dateCommande}" />
+                        <h:outputText value="Prestataire"/> 
+                        <p:selectOneMenu id="en5" value="#{commandeBean.nomPrestataire}" required="true" style="width:100%">
+                            <f:selectItems value="#{commandeBean.prestataires}" />  
+                        </p:selectOneMenu>
+                        <f:facet name="footer"> <br/>  
+                            <p:commandButton value="Enregistrer" action="#{commandeBean.saveBonCommande()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:bonTable" />  
+                        </f:facet>
+                        <f:facet name="footer">  
+                            <p:commandButton value="Effacer" type="reset"/>  
+                        </f:facet>
+                    </h:panelGrid> 
+                </h:form>
+            </p:dialog>
+
+        </div>
+    </h:body>
+</html>

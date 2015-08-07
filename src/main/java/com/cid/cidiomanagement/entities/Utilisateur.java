@@ -36,6 +36,8 @@ public class Utilisateur implements Serializable{
     @Column(nullable = false)
     private String password;
     
+    private boolean enabled;
+    
     @Basic
     @Enumerated(EnumType.STRING)
     private RoleType role;
@@ -86,6 +88,19 @@ public class Utilisateur implements Serializable{
 
     public void setRole(RoleType role) {
         this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" + "version=" + version + ", id=" + id + ", nom=" + nom + ", login=" + login + ", password=" + password + ", enabled=" + enabled + ", role=" + role + '}';
     }
     
     

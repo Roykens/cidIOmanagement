@@ -1,0 +1,83 @@
+body{
+    height: 700px;
+    width: 1284px;
+    margin: auto;
+    background-color: white;
+}
+
+#logo2{
+    background-image: url(../image/ho_slogan.png);
+    background-repeat: no-repeat;
+    width: 495px;
+    height: 89px;
+    float: right;
+    margin-right:50px;
+    margin-top: 25px;
+}
+#logo{
+    background-image: url(../image/sabc_logo.gif);
+    background-repeat: no-repeat;
+    width: 336px;
+    height: 96px;
+    float: left;
+}
+
+#logo,#logo2{
+    display: inline-block;
+    
+}
+#menu{
+    margin-left: 100px;
+    margin-right: 100px;
+    height: 45px;
+    /*padding: 102px;*/
+   /* background-color:lightgrey;*/
+    
+    margin-top: 10px;
+}
+#entete{
+    height: 96px;
+    width: auto;
+    background-color: darkgray;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+#conten{
+    margin-left: 100px;
+    margin-right: 100px;
+    height: 500px;
+    background-color: darkgray;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#cville{
+    margin-left: 410px;
+    margin-right: 410px;
+    height: 350px;
+    background-color: darkgrey;
+    border-radius: 10px;
+    /*text-align: center;*/
+    margin-top: 30px;
+    padding-left: 40px;
+    padding-top: 10px;
+}
+a img{
+    border-radius: 10px;
+    margin-left: 10px;
+}
+a img:hover{
+  background-color: red; 
+  padding-left: 2px;
+}
+a {
+    outline: 0;
+    padding: 1px;
+}
+.disk{
+    background-image: url(../image/sabc_logo.gif);
+}

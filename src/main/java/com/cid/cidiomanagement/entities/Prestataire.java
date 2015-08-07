@@ -101,6 +101,11 @@ public class Prestataire implements Serializable{
     public void setAir(Double air) {
         this.air = air;
     }
+
+    @Override
+    public String toString() {
+        return  nom;
+    }
     
     
     

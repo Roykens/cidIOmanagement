@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Gestion des Categories </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="../css/corps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/gif" href="../image/logo.gif" />
+    </h:head>
+    <h:body>
+        <div>
+       <ui:include src="../menu/menu.xhtml" />
+        </div>
+        <div id="conten">
+        <h:form id="list">
+            <p:contextMenu for="prestataireTable">     
+                        <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
+                        <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
+                    </p:contextMenu>
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <p:dataTable  var="prestataire" id="prestataireTable" value="#{prestataireBean.prestataires}" selection="#{prestataireBean.prestataire}" selectionMode="single" rowKey="#{prestataire.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+
+                        <f:facet name="header">  
+                            Liste des Prestataires
+                        </f:facet> 
+
+                        <p:column headerText="Nom" filterBy="#{prestataire.nom}" sortBy="#{prestataire.nom}">
+                            <h:outputText value="#{prestataire.nom}" />  
+                        </p:column>  
+                        
+                        <p:column headerText="Contribuable" filterBy="#{prestataire.noContribuable}" sortBy="#{prestataire.noContribuable}">  
+                            <h:outputText value="#{prestataire.noContribuable}" />  
+                        </p:column>
+                        
+                        <p:column headerText="A.I.R." filterBy="#{prestataire.air}" sortBy="#{prestataire.air}">  
+                            <h:outputText value="#{prestataire.air}" />  
+                        </p:column>
+                        <p:column headerText="Adresse" filterBy="#{prestataire.adresse}" sortBy="#{prestataire.adresse}">  
+                            <h:outputText value="#{prestataire.adresse}" />  
+                        </p:column>
+                        <p:column headerText="Téléphone" filterBy="#{prestataire.telephone}" sortBy="#{prestataire.telephone}">  
+                             <h:outputText value="#{prestataire.telephone}" />  
+                        </p:column>
+                        
+                        <f:facet name="footer">  
+                            <p:commandButton value="Ajouter une prestataire" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:prestataireTable" /> 
+                        </f:facet> 
+                    </p:dataTable> 
+                </h:form>
+            <p:dialog id="dialog" header="Modifier un prestataire" widgetVar="modifierDialog" resizable="true"  
+                           showEffect="clip"  hideEffect="explode" modal="true">  
+                    <h:form id ="updatform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Nom"/> 
+                            <p:inputText  id="entree0" value="#{prestataireBean.prestataire.nom}"/> 
+                            <h:outputText value="Contribuable"/> 
+                            <p:inputText  id="entree10" value="#{prestataireBean.prestataire.noContribuable}"/>
+                            <h:outputText value="A.I.R."/> 
+                            <p:inputText  id="entree11" value="#{prestataireBean.prestataire.air}"/>
+                            <h:outputText value="Adresse"/> 
+                            <p:inputText  id="entree12" value="#{prestataireBean.prestataire.adresse}"/>
+                            <h:outputText value="Telephone"/> 
+                            <p:inputText  id="entree13" value="#{prestataireBean.prestataire.telephone}"/>
+                            <h:inputHidden  id="entree14" value="#{prestataireBean.prestataire.id}"/> 
+
+                            <f:facet name="footer"> <br/> 
+                                <p:commandButton value="Modifier" action="#{prestataireBean.updatePrestataire()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:prestataireTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Initialiser" type="reset" />  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+                </p:dialog>       
+
+                <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
+                    <h:form id="supform">
+                        <h:inputHidden  id="entree11" value="#{prestataireBean.prestataire.id}"/>
+                        <p:commandButton value="Yes" action="#{prestataireBean.deletePrestataire()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:prestataireTable"/>
+                        <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
+                    </h:form>
+                </p:confirmDialog>
+            <p:dialog id="affecter" header="ajouter un prestataire" widgetVar="ajouter_dialog" resizable="true"  showEffect="clip" hideEffect="explode" modal="true"> 
+                   <h:form id ="saveform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Nom"/> 
+                            <p:inputText  id="en" value="#{prestataireBean.prestataire.nom}"/> 
+                            <h:outputText value="Contribuable"/> 
+                            <p:inputText  id="fr" value="#{prestataireBean.prestataire.noContribuable}"/> 
+                            <h:outputText value="A.I.R."/> 
+                            <p:inputText  id="fr1" value="#{prestataireBean.prestataire.air}"/> 
+                            <h:outputText value="Adresse"/> 
+                            <p:inputText  id="fr2" value="#{prestataireBean.prestataire.adresse}"/> 
+                            <h:outputText value="Téléphone"/> 
+                            <p:inputText  id="fr3" value="#{prestataireBean.prestataire.telephone}"/> 
+                            <f:facet name="footer"> <br/> 
+                                <p:commandButton value="Enregistrer" action="#{prestataireBean.savePrestataire()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:prestataireTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Annuler" onclick="PF('ajouter_dialog').hide()" />  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+               </p:dialog>
+            </div>
+    </h:body>
+</html>

@@ -89,6 +89,19 @@ public class Article implements Serializable{
     public void setPrixUnitaire(Double prixUnitaire) {
         this.prixUnitaire = prixUnitaire;
     }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
+    @Override
+    public String toString() {
+        return  designation;
+    }
     
     
     

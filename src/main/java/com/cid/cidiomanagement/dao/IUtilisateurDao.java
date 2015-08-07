@@ -1,6 +1,7 @@
 package com.cid.cidiomanagement.dao;
 
 import com.cid.cidiomanagement.entities.Utilisateur;
+import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.IGenericDao;
 import java.io.Serializable;
 
@@ -10,4 +11,5 @@ import java.io.Serializable;
  */
 public interface IUtilisateurDao extends IGenericDao<Utilisateur, Long>{
     
+    public Utilisateur findByLogin(String login) throws DataAccessException;
 }

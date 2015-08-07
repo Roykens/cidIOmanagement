@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Les Brasseries du Cameroun </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="../css/corps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/gif" href="../image/logo.gif" />
+    </h:head>
+    <h:body>
+        <div>
+       <ui:include src="../menu/menu.xhtml" />
+        </div>
+        <div id="conten">
+            <h:form id="list">
+                    <p:contextMenu for="articleTable">     
+                        <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
+                        <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
+                    </p:contextMenu>
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <p:dataTable  var="article" id="articleTable" value="#{donneesBean.articles}" selection="#{donneesBean.article}" selectionMode="single" rowKey="#{article.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+
+                        <f:facet name="header">  
+                            Liste des Articles
+                        </f:facet> 
+                        
+                        <p:column headerText="Nomenclature" filterBy="#{article.categorie.nomenclatureSommaire}" sortBy="#{article.categorie.nomenclatureSommaire}">  
+                            <h:outputText value="#{article.categorie.nomenclatureSommaire}" />  
+                        </p:column>
+
+                        <p:column headerText="Reférence" filterBy="#{article.reference}" sortBy="#{article.reference}">
+
+                            <h:outputText value="#{article.reference}" />  
+                        </p:column>                       
+                        
+                        <p:column headerText="Désignation" filterBy="#{article.designation}" sortBy="#{article.designation}">  
+                            <h:outputText value="#{article.designation}" />  
+                        </p:column>
+                        
+                        <p:column headerText="P.U." filterBy="#{article.prixUnitaire}" sortBy="#{article.prixUnitaire}">  
+                            <h:outputText value="#{article.prixUnitaire}" />  
+                        </p:column>
+                        
+                      
+                      
+                        <f:facet name="footer">  
+                            <p:commandButton value="Ajouter un article" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:articleTable" /> 
+                        </f:facet> 
+                    </p:dataTable> 
+                </h:form>
+                <p:dialog id="dialog" header="Modifier un article" widgetVar="modifierDialog" resizable="false"  
+                          width="400" showEffect="clip" hideEffect="explode" modal="true">  
+                    <h:form id ="updatform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Reférence"/> 
+                            <p:inputText  id="idenM" value="#{donneesBean.article.reference}" required="true"/> 
+                            <h:outputText value="Désignation"/> 
+                            <p:inputText  id="motM" value="#{donneesBean.article.designation}" required="true"/>
+                            <h:outputText value="Conditionnement"/> 
+                            <p:inputText  id="idcon" value="#{donneesBean.article.conditionnement}" required="true"/>
+                            <h:outputText value="P.U."/> 
+                            <p:inputText  id="idprix" value="#{donneesBean.article.prixUnitaire}" required="true"/>
+                            <h:outputText value="Nomenclature"/> 
+                            <p:selectOneMenu id="en5M" value="#{donneesBean.reference}" required="true" style="width:100%">
+                                <f:selectItems value="#{donneesBean.categories}" />  
+                            </p:selectOneMenu>
+                            
+                            <h:inputHidden  id="entree10" value="#{donneesBean.article.id}"/> 
+                            <f:facet name="footer"> <br/> 
+                                <p:commandButton value="Modifier" action="#{donneesBean.updateArticle()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:articleTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Initialiser" type="reset" />  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+                </p:dialog>       
+
+                <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert">
+                    <h:form id="supform">
+                        <h:inputHidden  id="entree11" value="#{donneesBean.article.id}"/>
+                        <p:commandButton value="Yes" action="#{donneesBean.deleteArticle()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:articleTable"/>
+                        <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
+                    </h:form>
+                </p:confirmDialog>
+               <p:dialog id="save" header="Ajouter un article" widgetVar="ajouter_dialog"  width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+                   <h:form id ="saveform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Réference"/> 
+                            <p:inputText  id="iden" value="#{donneesBean.article.reference}" required="true"/> 
+                            <h:outputText value="Désignation"/> 
+                            <p:inputText  id="mot" value="#{donneesBean.article.designation}" required="true"/>
+                            <h:outputText value="Conditionnement"/> 
+                            <p:inputText  id="cond" value="#{donneesBean.article.conditionnement}" required="true"/>
+                            <h:outputText value="Prix Unitaire"/> 
+                            <p:inputText  id="pu" value="#{donneesBean.article.prixUnitaire}" required="true"/>
+                            
+                            <h:outputText value="Nomenclature"/> 
+                            <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%">
+                                <f:selectItems value="#{donneesBean.categories}" />  
+                            </p:selectOneMenu>
+                            
+                            
+                            <f:facet name="footer"> <br/>  
+                                <p:commandButton value="Enregistrer" action="#{donneesBean.saveArticle()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:articleTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Effacer" type="reset"/>  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+               </p:dialog>
+        </div>
+    </h:body>
+</html>

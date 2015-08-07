@@ -71,6 +71,11 @@ public class Commande implements Serializable{
     public void setBonCommande(BonCommande bonCommande) {
         this.bonCommande = bonCommande;
     }
+
+    @Override
+    public String toString() {
+        return "Commande{" + "nombre=" + nombre + ", article=" + article.getDesignation() + '}';
+    }
     
     
 }

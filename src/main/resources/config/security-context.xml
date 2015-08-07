@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <!-- Enable method level Spring Security by annotations  -->
+    <sec:global-method-security pre-post-annotations="enabled" />  
+    <sec:http auto-config="true" use-expressions="true">
+
+<!--        <sec:intercept-url pattern="/**" requires-channel="https" />-->
+        <sec:intercept-url pattern="/login.xhtml" access="permitAll" />
+        <!-- Page level Spring Security : Intercept access to resources in /utilisateurs/** -->
+        <sec:intercept-url pattern="/utilisateurs/**" access="hasRole(ADMIN)" />
+            
+        <!-- Page level Spring Security : Intercept access to resources in /utilisateurs/** -->
+        <sec:intercept-url pattern="/commandes/**" access="hasRole(ADMIN)" />
+            
+        <!-- Page level Spring Security : Intercept access to resources in /utilisateurs/** -->
+        <sec:intercept-url pattern="/articles/**" access="hasAnyRole(ADMIN,USER)" />
+            
+        <!-- Page level Spring Security : Intercept access to resources in /utilisateurs/** -->
+        <sec:intercept-url pattern="/categories/**" access="permitAll" />
+            
+        <!-- Page level Spring Security : Intercept access to resources in /utilisateurs/** -->
+        <sec:intercept-url pattern="/prestataires/**" access="hasAnyRole(ADMIN,USER)" />
+
+        <!-- Page level Spring Security : Permit access to resources in /pages/unsecure/** -->
+        <sec:intercept-url pattern="/pages/unsecure/**" access="permitAll"/>
+
+        <!-- Page level Spring Security : Intercept access to resources in /** -->
+        <sec:intercept-url pattern="/**" access="permitAll"/>
+            
+        <sec:intercept-url pattern="/js/**" access="permitAll" />
+        <sec:intercept-url pattern="/css/**" access="permitAll"/>
+        <sec:intercept-url pattern="/images/**" access="permitAll" />
+        
+
+        <!-- Page level Spring Security : Enable Primefaces -->
+        <sec:intercept-url pattern="/javax.faces.resource/**" access="permitAll"/>
+        
+<!--        <sec:intercept-url pattern="/**" access="hasAnyRole('ADMIN','USER')"/>-->
+        <sec:intercept-url pattern="/memu/menu.xhtml" access="permitAll" />
+              
+        <!-- Define login page for Spring Security -->      
+        <sec:form-login login-page="/login.xhtml"/>
+
+        <!-- Define logout properties for Spring Security -->
+        <sec:logout invalidate-session="true" delete-cookies="true" logout-success-url="/"></sec:logout>
+    </sec:http>
+       
+    <!-- Set customUserDetailsService class as the authentication Manager for Spring Security-->
+    <sec:authentication-manager alias="authenticationManager">
+        <sec:authentication-provider user-service-ref="IUtilisateurService">
+            <sec:password-encoder hash="plaintext"></sec:password-encoder>
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+
+    <!-- Inject authentication Manager to our LoginBean -->
+<!--    <beans:bean id="loginBean" name="loginBean" class="com.cid.cidiomanagement.web.beans.LoginBean" scope="prototype">
+        <beans:property name="authenticationManager" ref="authenticationManager"></beans:property>
+    </beans:bean>-->
+</beans:beans>

@@ -1,8 +1,11 @@
 package com.cid.cidiomanagement.dao;
 
+import com.cid.cidiomanagement.entities.BonCommande;
 import com.cid.cidiomanagement.entities.Commande;
+import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.IGenericDao;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -10,4 +13,5 @@ import java.io.Serializable;
  */
 public interface ICommandeDao extends IGenericDao<Commande, Long>{
     
+    public List<Commande> findByBon(BonCommande bonCommande) throws DataAccessException;
 }

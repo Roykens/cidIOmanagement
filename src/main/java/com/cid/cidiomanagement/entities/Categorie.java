@@ -32,6 +32,10 @@ public class Categorie implements Serializable{
     @Column(unique = true, nullable = false)
     private String nomenclatureSommaire;
     
+    @Basic
+    @Column(unique = true)
+    private String nom;
+    
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL)
    private List<Article> articles;
 
@@ -59,12 +63,27 @@ public class Categorie implements Serializable{
         this.nomenclatureSommaire = nomenclatureSommaire;
     }
 
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+    
+    
+
     public List<Article> getArticles() {
         return articles;
     }
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    @Override
+    public String toString() {
+        return nomenclatureSommaire;
     }
     
     
