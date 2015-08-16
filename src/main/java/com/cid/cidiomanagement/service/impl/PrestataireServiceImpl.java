@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author royken
  */
-@Transactional
+@Transactional(readOnly = false)
 public class PrestataireServiceImpl implements IPrestataireService {
 
     private IPrestataireDao prestataireDao;

@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface IUtilisateurService {
     public Utilisateur findById(Long id) throws ServiceException;
+    public boolean findUtilisateurByLoginAndPassword(String login, String password) throws ServiceException;
     public Utilisateur saveOrUpdateUtilisateur(Utilisateur utilisateur) throws ServiceException;
     public List<Utilisateur> findAll() throws ServiceException;
     

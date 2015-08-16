@@ -5,6 +5,7 @@
 
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:sec="http://www.springframework.org/security/tags">
     <h:head>
@@ -23,17 +24,27 @@
 
         </div>
         <div id="menu">  
-            <h:form id="menubar">          
+            <h:form id="menubar">   
+
+
                 <p:menubar id="unique">
-                    <p:menuitem value="Accueil"  url="#" icon="fa fa-home" />
-                    <p:menuitem value="Categories" url="/faces/../categories/categories.xhtml" icon="fa-group"/>
-                    <p:menuitem value="Articles" url="/faces/../articles/articles.xhtml" icon="fa-print"/>
-                    <p:menuitem value="Prestataires" url="/faces/../prestataires/prestataires.xhtml" icon="fa-group"/>
-                    <p:menuitem value="Bon de Commande" url="/faces/../commandes/commandes.xhtml" icon="fa-cart-arrow-down"/>
-                    <p:menuitem value="Utilisateurs" url="#" icon="fa-user"/>
-
-
-                </p:menubar> 
+                    <p:menuitem value="Accueil"  icon="ui-icon-home"/>
+                    <p:submenu label="Données" icon="ui-icon-folder-collapsed">  
+                        <p:menuitem value="Catégories" url="/faces/../categories/categories.xhtml" icon="ui-icon-document" />
+                        <p:menuitem value="Articles" url="/faces/../articles/articles.xhtml" icon="ui-icon-plus" />      
+                    </p:submenu>
+                    <p:menuitem value="Prestataires" url="/faces/../prestataires/prestataires.xhtml" icon="ui-icon-suitcase"/>
+                    <p:menuitem value="Bon de Commande" url="/faces/../commandes/commandes.xhtml" icon="ui-icon-suitcase"/>
+                    <p:submenu label="Personnel" icon="ui-icon-folder-collapsed">  
+                        <p:menuitem value="Services" url="/faces/../services/services.xhtml" icon="ui-icon-document" />
+                        <p:menuitem value="Personnel" url="/faces/../personnels/personnels.xhtml" icon="ui-icon-plus" />      
+                    </p:submenu>
+                    <p:submenu label="Sorties" icon="ui-icon-folder-collapsed">  
+                        <p:menuitem value="Ordre de sortie" url="/faces/../services/services.xhtml" icon="ui-icon-document" />
+                        <p:menuitem value="Bon de sortie" url="/faces/../bonsorties/bonsorties.xhtml" icon="ui-icon-plus" />      
+                    </p:submenu>
+                    <p:menuitem value="Utilisateurs" url="/faces/../utilisateurs/utilisateurs.xhtml" icon="ui-icon-person"/>
+                </p:menubar>
             </h:form>     
         </div>  
     </h:body>

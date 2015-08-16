@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Transactional
+@Transactional(readOnly = false)
 public class UtilisateurServiceImpl implements UserDetailsService, IUtilisateurService {
 
     
@@ -103,6 +103,17 @@ public class UtilisateurServiceImpl implements UserDetailsService, IUtilisateurS
             Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    public boolean findUtilisateurByLoginAndPassword(String login, String password) throws ServiceException {
+        try {
+            Utilisateur u = utilisateurDao.findByLoginAndPassword(login, password);
+            return u != null;
+        } catch (DataAccessException ex) {
+            Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }

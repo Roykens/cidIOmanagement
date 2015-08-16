@@ -1,5 +1,6 @@
 package com.cid.cidiomanagement.dao;
 
+import com.cid.cidiomanagement.entities.BonCommande;
 import com.cid.cidiomanagement.entities.Prestataire;
 import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.IGenericDao;
@@ -11,4 +12,6 @@ import java.io.Serializable;
  */
 public interface IPrestataireDao extends IGenericDao<Prestataire, Long>{
     public Prestataire findByNom( String Nom) throws DataAccessException;
+    
+    public Prestataire findByBon(BonCommande commande) throws DataAccessException;
 }

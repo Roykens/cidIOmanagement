@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -6,7 +10,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Gestion des Categories </title>
+        <title>Gestion des Services </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link href="../css/corps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" type="image/gif" href="../image/logo.gif" />
@@ -17,43 +21,43 @@
         </div>
         <div id="conten">
         <h:form id="list">
-            <p:contextMenu for="categorieTable">     
+            <p:contextMenu for="serviceTable">     
                         <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
                         <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
                     </p:contextMenu>
                     <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                    <p:dataTable  var="categorie" id="categorieTable" value="#{donneesBean.categories}" selection="#{donneesBean.categorieChoisi}" selectionMode="single" rowKey="#{categorie.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+                    <p:dataTable  var="service" id="serviceTable" value="#{personnelBean.services}" selection="#{personnelBean.service}" selectionMode="single" rowKey="#{service.id}" paginator="true" rows="10" paginatorPosition="bottom">  
 
                         <f:facet name="header">  
-                            Liste des Catégories
+                            Liste des Services
                         </f:facet> 
 
-                        <p:column headerText="Nommenclature" filterBy="#{categorie.nomenclatureSommaire}" sortBy="#{categorie.nomenclatureSommaire}">
-                            <h:outputText value="#{categorie.nomenclatureSommaire}" />  
+                        <p:column headerText="Nom" filterBy="#{service.nom}" sortBy="#{service.nom}">
+                            <h:outputText value="#{service.nom}" />  
                         </p:column>  
                         
-                        <p:column headerText="Nom" filterBy="#{categorie.nom}" sortBy="#{categorie.nom}">  
-                            <h:outputText value="#{categorie.nom}" />  
+                        <p:column headerText="Code" filterBy="#{service.code}" sortBy="#{service.code}">  
+                            <h:outputText value="#{service.code}" />  
                         </p:column>
                         
                         <f:facet name="footer">  
-                            <p:commandButton value="Ajouter une categorie" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:categorieTable" /> 
+                            <p:commandButton value="Ajouter une service" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:serviceTable" /> 
                         </f:facet> 
                     </p:dataTable> 
                 </h:form>
-                <p:dialog id="dialog" header="Modifier une categorie" widgetVar="modifierDialog" resizable="false"  
-                          width="400" showEffect="clip" hideEffect="explode" modal="true">  
+            <p:dialog id="dialog" header="Modifier un service" widgetVar="modifierDialog" resizable="true"  
+                           showEffect="clip"  hideEffect="explode" modal="true">  
                     <h:form id ="updatform">
                         <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="entree0" value="#{donneesBean.categorieChoisi.nomenclatureSommaire}"/> 
                             <h:outputText value="Nom"/> 
-                            <p:inputText  id="entree10" value="#{donneesBean.categorieChoisi.nom}"/> 
-
-                            <h:inputHidden  id="entree11" value="#{donneesBean.categorieChoisi.id}"/> 
+                            <p:inputText  id="entree0" value="#{personnelBean.service.nom}"/> 
+                            <h:outputText value="Code"/> 
+                            <p:inputText  id="entree10" value="#{personnelBean.service.code}"/>
+                           
+                            <h:inputHidden  id="entree14" value="#{personnelBean.service.id}"/> 
 
                             <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Modifier" action="#{donneesBean.updateCategorie()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:categorieTable" />  
+                                <p:commandButton value="Modifier" action="#{personnelBean.updateService()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:serviceTable" />  
                             </f:facet>
                             <f:facet name="footer">  
                                 <p:commandButton value="Initialiser" type="reset" />  
@@ -64,20 +68,20 @@
 
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
                     <h:form id="supform">
-                        <h:inputHidden  id="entree11" value="#{donneesBean.categorieChoisi.id}"/>
-                        <p:commandButton value="Yes" action="#{donneesBean.deleteCategorie()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:categorieTable"/>
+                        <h:inputHidden  id="entree11" value="#{personnelBean.service.id}"/>
+                        <p:commandButton value="Yes" action="#{personnelBean.deleteService()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:serviceTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>
                 </p:confirmDialog>
-               <p:dialog id="affecter" header="ajouter une categorie" widgetVar="ajouter_dialog" resizable="false" width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+            <p:dialog id="affecter" header="Ajouter un service" widgetVar="ajouter_dialog" resizable="true"  showEffect="clip" hideEffect="explode" modal="true"> 
                    <h:form id ="saveform">
                         <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="en" value="#{donneesBean.categorie.nomenclatureSommaire}"/> 
                             <h:outputText value="Nom"/> 
-                            <p:inputText  id="fr" value="#{donneesBean.categorie.nom}"/> 
+                            <p:inputText  id="en" value="#{personnelBean.service.nom}"/> 
+                            <h:outputText value="Code"/> 
+                            <p:inputText  id="fr" value="#{personnelBean.service.code}"/> 
                             <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Enregistrer" action="#{donneesBean.saveCategorie()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:categorieTable" />  
+                                <p:commandButton value="Enregistrer" action="#{personnelBean.saveService()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:serviceTable" />  
                             </f:facet>
                             <f:facet name="footer">  
                                 <p:commandButton value="Annuler" onclick="PF('ajouter_dialog').hide()" />  

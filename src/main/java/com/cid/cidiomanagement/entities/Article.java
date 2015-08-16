@@ -1,6 +1,7 @@
 package com.cid.cidiomanagement.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.Min;
 
@@ -17,6 +19,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 public class Article implements Serializable{
+    
     
     @Version
     private int version;
@@ -39,8 +42,15 @@ public class Article implements Serializable{
     @Min(0)
     private Double prixUnitaire;
     
+    @Basic
+    @Min(0)
+    private Integer quantite;
+    
     @ManyToOne
     private Categorie categorie;
+    
+    @OneToOne(mappedBy = "article")
+    private Affectation affectation;
 
     public int getVersion() {
         return version;
@@ -98,9 +108,73 @@ public class Article implements Serializable{
         this.categorie = categorie;
     }
 
+    public Affectation getAffectation() {
+        return affectation;
+    }
+
+    public void setAffectation(Affectation affectation) {
+        this.affectation = affectation;
+    }
+
+    public Integer getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantité(Integer quantite) {
+        this.quantite = quantite;
+    }
+    
+    
+
     @Override
     public String toString() {
         return  designation;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.version;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.reference);
+        hash = 37 * hash + Objects.hashCode(this.designation);
+        hash = 37 * hash + Objects.hashCode(this.conditionnement);
+        hash = 37 * hash + Objects.hashCode(this.prixUnitaire);
+        hash = 37 * hash + Objects.hashCode(this.quantite);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Article other = (Article) obj;
+        if (this.version != other.version) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.reference, other.reference)) {
+            return false;
+        }
+        if (!Objects.equals(this.designation, other.designation)) {
+            return false;
+        }
+        if (!Objects.equals(this.conditionnement, other.conditionnement)) {
+            return false;
+        }
+        if (!Objects.equals(this.prixUnitaire, other.prixUnitaire)) {
+            return false;
+        }
+        if (!Objects.equals(this.quantite, other.quantite)) {
+            return false;
+        }
+        return true;
     }
     
     

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Transactional
+@Transactional(readOnly = false)
 public class DonneeServiceImpl implements IDonneeService {
 
    

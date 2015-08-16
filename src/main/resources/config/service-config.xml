@@ -18,7 +18,17 @@
     </bean>
     <bean id="ICommandeService" class="com.cid.cidiomanagement.service.impl.CommandeServiceImpl">
         <property name="bonCommandeDao" ref="IBonCommandeDao" />   
-        <property name="commandeDao" ref="ICommandeDao" />     
+        <property name="commandeDao" ref="ICommandeDao" /> 
+         <property name="prestataireDao" ref="IPrestataireDao" />     
+    </bean>
+    <bean id="IPersonnelService" class="com.cid.cidiomanagement.service.impl.PersonnelServiceImpl">
+        <property name="personnelDao" ref="IPersonnelDao" />   
+        <property name="serviceDao" ref="IServiceDao" />      
+    </bean>
+    <bean id="IOrdreSortieService" class="com.cid.cidiomanagement.service.impl.OrdreSortieServiceImpl">
+        <property name="affectationDao" ref="IAffectationDao" />   
+        <property name="bonSortieDao" ref="IBonSortieDao" /> 
+         <property name="ordreSortieDao" ref="IOrdreSortieDao" />     
     </bean>
 
 </beans>

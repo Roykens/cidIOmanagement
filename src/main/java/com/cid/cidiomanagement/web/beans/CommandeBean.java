@@ -2,13 +2,16 @@ package com.cid.cidiomanagement.web.beans;
 
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonCommande;
-import com.cid.cidiomanagement.entities.Categorie;
 import com.cid.cidiomanagement.entities.Commande;
 import com.cid.cidiomanagement.entities.Prestataire;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.IPrestataireService;
 import com.cid.cidiomanagement.service.ServiceException;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,8 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -26,35 +30,22 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class CommandeBean {
-    
+
     @ManagedProperty("#{ICommandeService}")
     private ICommandeService commandeService;
-    
     @ManagedProperty("#{IDonneeService}")
     private IDonneeService donneeService;
-    
     @ManagedProperty("#{IPrestataireService}")
     private IPrestataireService prestataireService;
-    
     private Commande commande = new Commande();
-    
     private BonCommande bonCommande = new BonCommande();
-    
     private Article article = new Article();
-    
     private Prestataire prestataire = new Prestataire();
-    
     private String nomPrestataire;
-    
     private String nomArticle;
-    
-    
     private List<Commande> commandes = new ArrayList<Commande>();
-    
     private List<BonCommande> bonCommandes = new ArrayList<BonCommande>();
-    
     private List<Article> articles = new ArrayList<Article>();
-    
     private List<Prestataire> prestataires = new ArrayList<Prestataire>();
 
     /**
@@ -86,8 +77,8 @@ public class CommandeBean {
     public void setPrestataireService(IPrestataireService prestataireService) {
         this.prestataireService = prestataireService;
     }
-    
-    public List<Commande>getTrash(){
+
+    public List<Commande> getTrash() {
         Article art = new Article();
         art.setDesignation("un article");
         Commande com = new Commande();
@@ -101,8 +92,6 @@ public class CommandeBean {
         coms.add(com);
         return coms;
     }
-    
-    
 
     public Commande getCommande() {
         return commande;
@@ -151,8 +140,6 @@ public class CommandeBean {
     public void setNomArticle(String nomArticle) {
         this.nomArticle = nomArticle;
     }
-    
-    
 
     public List<Commande> getCommandes() {
         return commandes;
@@ -203,16 +190,16 @@ public class CommandeBean {
     public void setPrestataires(List<Prestataire> prestataires) {
         this.prestataires = prestataires;
     }
-    
-    public void addCommande(){
+
+    public void addCommande() {
         try {
             Article art = donneeService.findByDesignation(nomArticle);
             System.out.println("J'ajoute l'article    : " + art);
             commande.setArticle(art);
-            
+
             commandes.add(commande);
             commande = new Commande();
-            
+
 //            System.out.println("Ma liste d'articles");
 //            for (Commande commande1 : commandes) {
 //                System.out.println(commande1);
@@ -221,16 +208,16 @@ public class CommandeBean {
             Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void toto(){
+
+    public void toto() {
         System.out.println("Le bon de Commande \n\n\n\n");
         System.out.println(bonCommande);
     }
-    
-    public void finirBon(){
-        
-        
-        
+
+    public void finirBon() {
+
+
+
         for (Commande commande1 : commandes) {
             try {
                 commande1.setBonCommande(bonCommande);
@@ -240,8 +227,8 @@ public class CommandeBean {
             }
         }
     }
-    
-    public String saveBonCommande(){
+
+    public String saveBonCommande() {
         try {
             Prestataire prestataire1 = prestataireService.findByNom(nomPrestataire);
             System.out.println(prestataire1);
@@ -252,4 +239,28 @@ public class CommandeBean {
         }
         return "success";
     }
+
+    public void procesVerbal() throws ServiceException, FileNotFoundException {
+
+        System.out.println("Je suis ici \n\n\n");
+        System.out.println(bonCommande);
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        Object response = context.getExternalContext().getResponse();
+        if (response instanceof HttpServletResponse) {
+            try {
+                HttpServletResponse hsr = (HttpServletResponse) response;
+                hsr.setContentType("application/pdf");
+                hsr.setHeader("Content-Disposition", "attachment; filename=pv.pdf");
+                commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+
+                context.responseComplete();
+            } catch (IOException ex) {
+                Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+
+    }
+    
 }

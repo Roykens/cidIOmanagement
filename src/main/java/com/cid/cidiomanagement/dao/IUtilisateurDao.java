@@ -12,4 +12,6 @@ import java.io.Serializable;
 public interface IUtilisateurDao extends IGenericDao<Utilisateur, Long>{
     
     public Utilisateur findByLogin(String login) throws DataAccessException;
+    
+    public Utilisateur findByLoginAndPassword(String login, String password) throws DataAccessException;
 }

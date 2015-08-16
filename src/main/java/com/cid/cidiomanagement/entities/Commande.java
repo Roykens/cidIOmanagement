@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+import javax.validation.constraints.Min;
 
 /**
  *
@@ -25,6 +26,10 @@ public class Commande implements Serializable{
     
     @Basic
     private int nombre;
+    
+    @Basic
+    @Min(0)
+    private int prixArticle;
     
     @ManyToOne
     private Article article;
@@ -72,9 +77,22 @@ public class Commande implements Serializable{
         this.bonCommande = bonCommande;
     }
 
+    public int getPrixArticle() {
+        return prixArticle;
+    }
+
+    public void setPrixArticle(int prixArticle) {
+        this.prixArticle = prixArticle;
+    }
+
+    
+    public String getCategorie(){
+        return article.getCategorie().getNomenclatureSommaire();
+    }
+    
     @Override
     public String toString() {
-        return "Commande{" + "nombre=" + nombre + ", article=" + article.getDesignation() + '}';
+        return "Commande{"+"categorie="+article.getCategorie().getNomenclatureSommaire() + "nombre=" + nombre + ", article=" + article.getDesignation() + '}';
     }
     
     

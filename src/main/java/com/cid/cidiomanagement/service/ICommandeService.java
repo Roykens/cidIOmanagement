@@ -29,5 +29,9 @@ public interface ICommandeService {
     
     public void produireOrdreEntree(Long bonCommandeId, OutputStream stream) throws ServiceException;
     
+      public void produceTrash(Long bonId, String objet ,OutputStream outputStream) throws ServiceException;
+      
+      
+    
     
 }

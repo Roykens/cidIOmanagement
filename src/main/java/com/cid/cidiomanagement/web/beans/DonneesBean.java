@@ -131,11 +131,11 @@ public class DonneesBean {
     }
     
     
-    public String saveCategorie(ActionEvent actionEvent){
+    public String saveCategorie(){
         try {
             System.out.println("\n\n je suis " + categorie);
             donneeService.saveOrUpdateCategorie(categorie);           
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Operation reussie", categorie.getNom() + " a été enregistré "));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", categorie.getNom() + " a été enregistré "));
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Gestion du Personnel </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="../css/corps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/gif" href="../image/logo.gif" />
+    </h:head>
+    <h:body>
+        <div>
+       <ui:include src="../menu/menu.xhtml" />
+        </div>
+        <div id="conten">
+            <h:form id="list">
+                    <p:contextMenu for="personneTable">     
+                        <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
+                        <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
+                    </p:contextMenu>
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <p:dataTable  var="personne" id="personneTable" value="#{personnelBean.personnels}" selection="#{personnelBean.personne}" selectionMode="single" rowKey="#{personne.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+
+                        <f:facet name="header">  
+                            Liste du Personnel
+                        </f:facet> 
+                        
+                        <p:column headerText="Nom" filterBy="#{personne.nom}" sortBy="#{personne.nom}">  
+                            <h:outputText value="#{personne.nom}" />  
+                        </p:column>
+
+                        <p:column headerText="Service" filterBy="#{personne.service.nom}" sortBy="#{personne.service.nom}">
+
+                            <h:outputText value="#{personne.service.nom}" />  
+                        </p:column>                       
+                        <f:facet name="footer">  
+                            <p:commandButton value="Ajouter un personne" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:personneTable" /> 
+                        </f:facet> 
+                    </p:dataTable> 
+                </h:form>
+                <p:dialog id="dialog" header="Modifier une personne" widgetVar="modifierDialog" resizable="false"  
+                          width="400" showEffect="clip" hideEffect="explode" modal="true">  
+                    <h:form id ="updatform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Nom"/> 
+                            <p:inputText  id="idenM" value="#{personnelBean.personne.nom}" required="true"/> 
+                            <h:outputText value="Désignation"/>
+                            <p:selectOneMenu id="en5M" value="#{personnelBean.codeService}" required="true" style="width:100%" filter="true">
+                                <f:selectItems value="#{personnelBean.services}" />  
+                            </p:selectOneMenu>
+                            
+                            <h:inputHidden  id="entree10" value="#{personnelBean.personne.id}"/> 
+                            <f:facet name="footer"> <br/> 
+                                <p:commandButton value="Modifier" action="#{personnelBean.updatePersonnel()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:personneTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Initialiser" type="reset" />  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+                </p:dialog>       
+
+                <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert">
+                    <h:form id="supform">
+                        <h:inputHidden  id="entree11" value="#{personnelBean.personne.id}"/>
+                        <p:commandButton value="Yes" action="#{personnelBean.deletePersonnel()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:personneTable"/>
+                        <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
+                    </h:form>
+                </p:confirmDialog>
+               <p:dialog id="save" header="Ajouter une personne" widgetVar="ajouter_dialog"  width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+                   <h:form id ="saveform">
+                        <h:panelGrid id="display" columns="2" >  
+                            <h:outputText value="Nom"/> 
+                            <p:inputText  id="iden" value="#{personnelBean.personne.nom}" required="true"/> 
+                           <h:outputText value="Service"/> 
+                           <p:selectOneMenu id="en5" value="#{personnelBean.codeService}" required="true" style="width:100%" filter="true">
+                                <f:selectItems value="#{personnelBean.services}" />  
+                            </p:selectOneMenu>
+                            
+                            
+                            <f:facet name="footer"> <br/>  
+                                <p:commandButton value="Enregistrer" action="#{personnelBean.savePersonnel()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:personneTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Effacer" type="reset"/>  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+               </p:dialog>
+        </div>
+    </h:body>
+</html>

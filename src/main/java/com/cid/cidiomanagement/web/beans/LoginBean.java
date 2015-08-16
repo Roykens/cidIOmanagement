@@ -1,12 +1,18 @@
 package com.cid.cidiomanagement.web.beans;
 
+import com.cid.cidiomanagement.service.IUtilisateurService;
+import com.cid.cidiomanagement.service.ServiceException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +32,9 @@ public class LoginBean implements Serializable{
     
     @ManagedProperty(value="#{authenticationManager}")
     private AuthenticationManager authenticationManager;
+    
+    @ManagedProperty(value = "#{IUtilisateurService}")
+    private IUtilisateurService utilisateurService;
 
     public String getUserName() {
         return userName;
@@ -42,6 +51,14 @@ public class LoginBean implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public IUtilisateurService getUtilisateurService() {
+        return utilisateurService;
+    }
+
+    public void setUtilisateurService(IUtilisateurService utilisateurService) {
+        this.utilisateurService = utilisateurService;
+    }
     
     
 
@@ -53,8 +70,9 @@ public class LoginBean implements Serializable{
     
     
     public String login() {
-//        try {
-//            
+        try {
+            //        try {
+//
 //            Authentication request = new UsernamePasswordAuthenticationToken(this.getUserName(), this.getPassword());
 //            Authentication result = authenticationManager.authenticate(request);
 //            SecurityContextHolder.getContext().setAuthentication(result);
@@ -63,8 +81,23 @@ public class LoginBean implements Serializable{
 //            
 //            return "incorrect";
 //        }
-        
-        return "correct";
+            boolean result = utilisateurService.findUtilisateurByLoginAndPassword(userName, password);
+            if(result){
+                return "correct";
+            }
+            else{
+                FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Identifiants Invalides!",
+                    "Veuillez reéssayer!"));
+            }
+            
+            
+        } catch (ServiceException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "incorrect";
     }
     
      public String cancel() {
