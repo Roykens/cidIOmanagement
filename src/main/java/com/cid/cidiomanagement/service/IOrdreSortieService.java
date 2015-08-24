@@ -3,6 +3,7 @@ package com.cid.cidiomanagement.service;
 import com.cid.cidiomanagement.entities.Affectation;
 import com.cid.cidiomanagement.entities.BonSortie;
 import com.cid.cidiomanagement.entities.OrdreSortie;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -42,4 +43,8 @@ public interface IOrdreSortieService {
     public void deletOrdre(Long id) throws ServiceException;
     
     public List<OrdreSortie> findAllOrdre() throws ServiceException;
+    
+    public OrdreSortie findByDateString(String date) throws ServiceException;
+    
+    public void imprimerBsp(Long idBsp, OutputStream stream) throws ServiceException;
 }

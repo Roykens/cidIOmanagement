@@ -13,78 +13,86 @@
     </h:head>
     <h:body>
         <div>
-       <ui:include src="../menu/menu.xhtml" />
+            <ui:include src="../menu/menu.xhtml" />
         </div>
         <div id="conten">
-        <h:form id="list">
-            <p:contextMenu for="ordreTable">     
-                        <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
-                        <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
-                    </p:contextMenu>
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                    <p:dataTable  var="ordre" id="ordreTable" value="#{ordreSortieBean.ordreSorties}" selection="#{ordreSortieBean.ordreSortie}" selectionMode="single" rowKey="#{ordre.id}" paginator="true" rows="10" paginatorPosition="bottom">  
+            <h:form id="list">
+                <p:contextMenu for="ordreTable">     
+                    <p:menuitem value="Supprimer" onclick="PF('cd').show()" icon="ui-icon-home"  update=":supform" />
+                    <p:menuitem value="Modifier" onclick="PF('modifierDialog').show()" icon="ui-icon-pencil"  update=":updatform:display"/> 
+                </p:contextMenu>
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                <p:dataTable  var="ordre" id="ordreTable" value="#{ordreSortieBean.ordreSorties}" selection="#{ordreSortieBean.ordreSortie}" selectionMode="single" rowKey="#{ordre.id}" paginator="true" rows="10" paginatorPosition="bottom">  
 
-                        <f:facet name="header">  
-                            Liste des Ordre de sortie
-                        </f:facet> 
+                    <f:facet name="header">  
+                        Liste des Ordres de sortie
+                    </f:facet> 
+                    <p:column headerText="Période" filterBy="#{ordre.dateString}" sortBy="#{ordre.dateString}">
+                        <h:outputText value="#{ordre.dateString}" />  
+                    </p:column> 
+                    <p:column headerText="Date" filterBy="#{ordre.dateOrdreSortie}" sortBy="#{ordre.dateOrdreSortie}">
+                        <h:outputText value="#{ordre.dateOrdreSortie}" />  
+                    </p:column> 
+                    <p:column headerText="Etat" filterBy="#{ordre.etatType}" sortBy="#{ordre.etatType}">  
+                        <h:outputText value="#{ordre.etatType}" />  
+                    </p:column>
 
-                        <p:column headerText="Nommenclature" filterBy="#{ordre.nomenclatureSommaire}" sortBy="#{ordre.nomenclatureSommaire}">
-                            <h:outputText value="#{ordre.nomenclatureSommaire}" />  
-                        </p:column>  
-                        
-                        <p:column headerText="Nom" filterBy="#{ordre.nom}" sortBy="#{ordre.nom}">  
-                            <h:outputText value="#{ordre.nom}" />  
-                        </p:column>
-                        
+                    <p:column headerText="Imprimer" >  
+                        <p:commandButton  id="q" onclick="PF('dlgBon').show()" icon="ui-icon-arrowrefresh-1-w" >
+                            <f:setPropertyActionListener value="#{ordre}" target="#{ordreSortieBean.ordreSortie}"/>
+                        </p:commandButton>
+                        <p:tooltip for="q" value="cliquez ici pour imprimer ce bon de sortie"/>
+                    </p:column>
+
+                    <f:facet name="footer">  
+                        <p:commandButton value="Ajouter un ordre" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:ordreTable" /> 
+                    </f:facet> 
+                </p:dataTable> 
+            </h:form>
+            <p:dialog id="dialog" header="Modifier une ordre" widgetVar="modifierDialog" resizable="false"  
+                      width="400" showEffect="clip" hideEffect="explode" modal="true">  
+                <h:form id ="updatform">
+                    <h:panelGrid id="display" columns="2" >  
+                        <h:outputText value="Période : "/> 
+                        <p:inputText  id="en" value="#{ordreSortieBean.ordreSortie.dateString}" required="true" requiredMessage="Veuillez choisir la période" /> 
+                        <h:outputText value="Date : "/> 
+                        <p:inputText  id="entree0" value="#{ordreSortieBean.ordreSortie.dateOrdreSortie}"/>
+                        <f:facet name="footer"> <br/> 
+                            <p:commandButton value="Modifier" action="#{ordreSortieBean.updateOrdre()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:ordreTable" />  
+                        </f:facet>
                         <f:facet name="footer">  
-                            <p:commandButton value="Ajouter une ordre" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:ordreTable" /> 
-                        </f:facet> 
-                    </p:dataTable> 
+                            <p:commandButton value="Initialiser" type="reset" />  
+                        </f:facet>
+                    </h:panelGrid> 
                 </h:form>
-                <p:dialog id="dialog" header="Modifier une ordre" widgetVar="modifierDialog" resizable="false"  
-                          width="400" showEffect="clip" hideEffect="explode" modal="true">  
-                    <h:form id ="updatform">
-                        <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="entree0" value="#{donneesBean.ordreChoisi.nomenclatureSommaire}"/> 
-                            <h:outputText value="Nom"/> 
-                            <p:inputText  id="entree10" value="#{donneesBean.ordreChoisi.nom}"/> 
+            </p:dialog>       
 
-                            <h:inputHidden  id="entree11" value="#{donneesBean.ordreChoisi.id}"/> 
+            <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
+                <h:form id="supform">
+                    <h:inputHidden  id="entree11" value="#{ordreSortieBean.ordreSortie.id}"/>
+                    <p:commandButton value="Yes" action="#{donneesBean.deleteCategorie()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:ordreTable"/>
+                    <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
+                </h:form>
+            </p:confirmDialog>
+            <p:dialog id="affecter" header="Ajouter un ordre" widgetVar="ajouter_dialog" resizable="false" width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+                <h:form id ="saveform">
+                    <h:panelGrid id="display" columns="2" > 
+                        <h:outputText value="Période : "/> 
+                        <p:inputText  id="en" value="#{ordreSortieBean.ordreSortie.dateString}" required="true" requiredMessage="Veuillez choisir la période" alt="Janvier 2016"/> 
 
-                            <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Modifier" action="#{donneesBean.updateCategorie()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:ordreTable" />  
-                            </f:facet>
-                            <f:facet name="footer">  
-                                <p:commandButton value="Initialiser" type="reset" />  
-                            </f:facet>
-                        </h:panelGrid> 
-                    </h:form>
-                </p:dialog>       
+                        <p:outputLabel for="popup" value="Date :" />
+                        <p:calendar id="popup" value="#{ordreSortieBean.ordreSortie.dateOrdreSortie}" />
 
-                <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
-                    <h:form id="supform">
-                        <h:inputHidden  id="entree11" value="#{donneesBean.ordreChoisi.id}"/>
-                        <p:commandButton value="Yes" action="#{donneesBean.deleteCategorie()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:ordreTable"/>
-                        <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
-                    </h:form>
-                </p:confirmDialog>
-               <p:dialog id="affecter" header="ajouter une ordre" widgetVar="ajouter_dialog" resizable="false" width="400" showEffect="clip" hideEffect="explode" modal="true"> 
-                   <h:form id ="saveform">
-                        <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="en" value="#{donneesBean.ordre.nomenclatureSommaire}"/> 
-                            <h:outputText value="Nom"/> 
-                            <p:inputText  id="fr" value="#{donneesBean.ordre.nom}"/> 
-                            <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Enregistrer" action="#{donneesBean.saveCategorie()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:ordreTable" />  
-                            </f:facet>
-                            <f:facet name="footer">  
-                                <p:commandButton value="Annuler" onclick="PF('ajouter_dialog').hide()" />  
-                            </f:facet>
-                        </h:panelGrid> 
-                    </h:form>
-               </p:dialog>
-            </div>
+
+                        <f:facet name="footer"> <br/> 
+                            <p:commandButton value="Enregistrer" action="#{ordreSortieBean.saveOrdre()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:ordreTable" />  
+                        </f:facet>
+                        <f:facet name="footer">  
+                            <p:commandButton value="Annuler" onclick="PF('ajouter_dialog').hide()" />  
+                        </f:facet>
+                    </h:panelGrid> 
+                </h:form>
+            </p:dialog>
+        </div>
     </h:body>
 </html>

@@ -263,4 +263,25 @@ public class CommandeBean {
 
     }
     
+     public void produireOrdreSortie(){
+        System.out.println("Je suis ici \n\n\n");
+        System.out.println(bonCommande);
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        Object response = context.getExternalContext().getResponse();
+        if (response instanceof HttpServletResponse) {
+            try {
+                HttpServletResponse hsr = (HttpServletResponse) response;
+                hsr.setContentType("application/pdf");
+                hsr.setHeader("Content-Disposition", "attachment; filename=ordreEntree.pdf");
+                
+               // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                context.responseComplete();
+            } catch (IOException | ServiceException ex) {
+                Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
 }

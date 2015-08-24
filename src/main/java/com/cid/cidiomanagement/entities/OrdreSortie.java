@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
@@ -25,6 +26,7 @@ import javax.persistence.Version;
 @Entity
 public class OrdreSortie implements Serializable {
 
+    @Transient
     private final DateFormat df;
     
 
@@ -41,6 +43,10 @@ public class OrdreSortie implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(unique = true)
     private Date dateOrdreSortie;
+    
+    @Basic
+    @Column(unique = true)
+    private String dateString;
 
     @Basic
     @Enumerated(EnumType.STRING)
@@ -92,11 +98,21 @@ public class OrdreSortie implements Serializable {
     public void setEtatType(EtatType etatType) {
         this.etatType = etatType;
     }
+
+    public String getDateString() {
+        return dateString;
+    }
+
+    public void setDateString(String dateString) {
+        this.dateString = dateString;
+    }
+    
+    
     
 
     @Override
     public String toString() {
-        return String.format("%s ",df.format(dateOrdreSortie));
+        return dateString;
     }
     
 }

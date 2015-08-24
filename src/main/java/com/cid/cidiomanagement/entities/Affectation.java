@@ -40,6 +40,9 @@ public class Affectation implements Serializable{
     
     @ManyToOne
     private BonSortie bonSortie;
+    
+    @Basic
+    private String observation;
 
     public Long getId() {
         return id;
@@ -89,6 +92,16 @@ public class Affectation implements Serializable{
         this.qteDemandee = qteDemandee;
     }
 
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
+    }
+    
+    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -113,10 +126,12 @@ public class Affectation implements Serializable{
         if (!Objects.equals(this.qteDemandee, other.qteDemandee)) {
             return false;
         }
-        if (!Objects.equals(this.nombre, other.nombre)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.nombre, other.nombre);
+    }
+
+    @Override
+    public String toString() {
+        return "Affectation{" + "id=" + id + ", qteDemandee=" + qteDemandee + ", nombre=" + nombre + '}';
     }
     
     

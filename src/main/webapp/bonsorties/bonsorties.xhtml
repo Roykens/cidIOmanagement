@@ -26,8 +26,7 @@
 
                     <f:facet name="header">  
                         Liste des Bons de Sorties Provisoires
-                    </f:facet> 
-
+                    </f:facet>
                     <p:column headerText="Date" filterBy="#{bon.datesortie}" sortBy="#{bon.datesortie}">
                         <h:outputText value="#{bon.datesortie}" />  
                     </p:column>  
@@ -50,7 +49,7 @@
                     </p:column>
 
                     <f:facet name="footer">  
-                        <p:commandButton value="Ajouter un Bon de Commande" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:bonTable" /> 
+                        <p:commandButton value="Ajouter un Bon de sortie provisoire" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:bonTable" /> 
                     </f:facet> 
                 </p:dataTable> 
             </h:form>
@@ -59,15 +58,15 @@
             <p:dialog modal="true" header="Ajouter des affectations au bon de sortie" widgetVar="dlgArticles" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
                 <h:form id="formUpdate">    
                     <p:growl id="growl1" showDetail="true" /> 
-
                     <h:panelGrid  class="rightPosition"  id="displayUpdate" columns="2">                                        
-
-
-
-                        <h:outputText value="Articles : "/>
+                        <h:outputText value="Article : "/>
                         <p:selectOneMenu id="art" value="#{ordreSortieBean.nomArticle}" required="true" style="width:100%" filter="true">
                             <f:selectItems value="#{ordreSortieBean.arcArticles}" />  
                         </p:selectOneMenu>
+                        
+                        <h:outputText value="Obersvation/ No Serie : "/> 
+                        <p:inputText  id="ps" value="#{ordreSortieBean.affectation.observation}" required="true"/>
+                        
                         <h:outputText value="Quantité Désirée : "/> 
                         <p:inputText  id="qt" value="#{ordreSortieBean.affectation.qteDemandee}" required="true"/>
 
@@ -80,7 +79,7 @@
                         </p:selectOneMenu>
                         
                         <f:facet name="footer"> <br/>  
-                            <p:commandButton value="Ajouter" action="#{commandeBean.addCommande()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":articles:articleTable" />  
+                            <p:commandButton value="Ajouter" action="#{ordreSortieBean.addAffectation()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":articles:articleTable" />  
                         </f:facet>
                     </h:panelGrid>
                 </h:form>
@@ -92,20 +91,20 @@
                         <f:facet name="header">  
                             Liste des Affectations
                         </f:facet>
-                        <p:column headerText="Article" >
+                        <p:column headerText="Article :" >
                             <h:outputText value="#{item.article}" />  
                         </p:column> 
-                        <p:column headerText="Quantité désirée" >
+                        <p:column headerText="Quantité désirée :" >
                             <h:outputText value="#{item.qteDemandee}" />  
                         </p:column> 
                         
-                        <p:column headerText="Quantité accordée" >
+                        <p:column headerText="Quantité accordée :" >
                             <h:outputText value="#{item.nombre}" />  
                         </p:column> 
 
 
                         <f:facet name="footer">  
-                            <p:commandButton value="Enregistrer Affectations" action="#{commandeBean.finirBon()}" oncomplete="PF('dlgArticles').hide()"/>  
+                            <p:commandButton value="Enregistrer Affectations" action="#{ordreSortieBean.finirBon()}" oncomplete="PF('dlgArticles').hide()"/>  
                         </f:facet>
                     </p:dataTable>
 
@@ -116,9 +115,9 @@
             </p:dialog>
 
 
-            <p:dialog modal="true" header="Ajouter des commandes au bon de commande" widgetVar="dlgBon" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
+            <p:dialog modal="true" header="Imprimer le Bon de Sortie" widgetVar="dlgBon" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
                 <h:form id="formbonc" enctype="multipart/form-data">
-                    <p:commandButton ajax="false" value="Imprimer le bon de commande"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.procesVerbal()}">
+                    <p:commandButton ajax="false" value="Imprimer le bon de commande"  style="margin-left: 10px; margin-top: 10px;" action="#{ordreSortieBean.produceBs()}">
                     </p:commandButton>
                 </h:form>
                 <p:separator/>
@@ -131,18 +130,18 @@
             <p:dialog id="save" header="Ajouter un Bon de sortie" widgetVar="ajouter_dialog"   showEffect="clip" hideEffect="explode" modal="true"> 
                 <h:form id ="saveform">
                     <h:panelGrid id="display" columns="2" > 
-                        <p:outputLabel for="popup" value="Date : " />
-                        <p:calendar id="popup" value="#{ordreSortieBean.bonSortie.datesortie}" />
-                        <h:outputText value="Demandant : "/> 
+                         <h:outputText value="Demandant : "/> 
                         <p:selectOneMenu id="en5" value="#{ordreSortieBean.nomPersonnel}" required="true" style="width:100%" filter="true">
                             <f:selectItems value="#{ordreSortieBean.personnels}" />  
                         </p:selectOneMenu>
+                        <p:outputLabel for="popup" value="Date : " />
+                        <p:calendar id="popup" value="#{ordreSortieBean.bonSortie.datesortie}" />                  
                          <h:outputText value="Période : "/> 
-                        <p:selectOneMenu id="en6" value="#{ordreSortieBean.dateOrdre}" required="true" style="width:100%" filter="true">
+                         <p:selectOneMenu id="en6" value="#{ordreSortieBean.dateO}" required="true" style="width:100%" filter="true">
                             <f:selectItems value="#{ordreSortieBean.ordreSorties}" />  
                         </p:selectOneMenu>
                         <f:facet name="footer"> <br/>  
-                            <p:commandButton value="Enregistrer" action="#{commandeBean.saveBonCommande()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:bonTable" />  
+                            <p:commandButton value="Enregistrer" action="#{ordreSortieBean.saveBonSortie()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:bonTable" />  
                         </f:facet>
                         <f:facet name="footer">  
                             <p:commandButton value="Effacer" type="reset"/>  
@@ -150,7 +149,6 @@
                     </h:panelGrid> 
                 </h:form>
             </p:dialog>
-
         </div>
     </h:body>
 </html>

@@ -3,16 +3,25 @@ package com.cid.cidiomanagement.web.beans;
 import com.cid.cidiomanagement.entities.Affectation;
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonSortie;
+import com.cid.cidiomanagement.entities.EtatType;
 import com.cid.cidiomanagement.entities.OrdreSortie;
 import com.cid.cidiomanagement.entities.Personnel;
+import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.IOrdreSortieService;
-import javax.enterprise.context.SessionScoped;
-import java.io.Serializable;
+import com.cid.cidiomanagement.service.IPersonnelService;
+import com.cid.cidiomanagement.service.ServiceException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -20,35 +29,41 @@ import javax.faces.bean.ManagedProperty;
  */
 @ManagedBean
 @SessionScoped
-public class OrdreSortieBean implements Serializable {
+public class OrdreSortieBean  {
 
     @ManagedProperty(value = "#{IOrdreSortieService}")
     private IOrdreSortieService sortieService;
+
+    @ManagedProperty(value = "#{IPersonnelService}")
+    private IPersonnelService personnelService;
     
+    @ManagedProperty(value = "#{IDonneeService}")
+    private IDonneeService donneeService;
+
     private Affectation affectation = new Affectation();
-    
-    private List<Affectation> affectations = new ArrayList<>();
-    
+
+    private List<Affectation> affectations = new ArrayList<Affectation>();
+
     private BonSortie bonSortie = new BonSortie();
-    
+
     private List<BonSortie> bonSorties = new ArrayList<>();
-    
+
     private OrdreSortie ordreSortie = new OrdreSortie();
-    
+
     private List<OrdreSortie> ordreSorties = new ArrayList<>();
-    
+
     private List<Personnel> personnels = new ArrayList<>();
-    
+
     private List<Article> arcArticles = new ArrayList<>();
-    
+
     private Date dateOrdre;
     
+    private String dateO;
+
     private String nomArticle;
-    
+
     private String nomPersonnel;
-    
-    
-    
+
     /**
      * Creates a new instance of OrdreSortieBean
      */
@@ -96,7 +111,13 @@ public class OrdreSortieBean implements Serializable {
     }
 
     public List<BonSortie> getBonSorties() {
-        return bonSorties;
+        try {
+            bonSorties = sortieService.findAllBonSortie();
+            return bonSorties;
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public void setBonSorties(List<BonSortie> bonSorties) {
@@ -104,7 +125,13 @@ public class OrdreSortieBean implements Serializable {
     }
 
     public List<OrdreSortie> getOrdreSorties() {
-        return ordreSorties;
+        try {
+            ordreSorties = sortieService.findAllOrdre();
+            return ordreSorties;
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public void setOrdreSorties(List<OrdreSortie> ordreSorties) {
@@ -120,7 +147,14 @@ public class OrdreSortieBean implements Serializable {
     }
 
     public List<Personnel> getPersonnels() {
-        return personnels;
+
+        try {
+            personnels = personnelService.findAllPersonnel();
+            return personnels;
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public void setPersonnels(List<Personnel> personnels) {
@@ -144,15 +178,147 @@ public class OrdreSortieBean implements Serializable {
     }
 
     public List<Article> getArcArticles() {
-        return arcArticles;
+        try {
+            arcArticles = donneeService.findAllArticle();
+            return arcArticles;
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public void setArcArticles(List<Article> arcArticles) {
         this.arcArticles = arcArticles;
     }
+
+    public IPersonnelService getPersonnelService() {
+        return personnelService;
+    }
+
+    public void setPersonnelService(IPersonnelService personnelService) {
+        this.personnelService = personnelService;
+    }
+
+    public IDonneeService getDonneeService() {
+        return donneeService;
+    }
+
+    public void setDonneeService(IDonneeService donneeService) {
+        this.donneeService = donneeService;
+    }
+
+    public String getDateO() {
+        return dateO;
+    }
+
+    public void setDateO(String dateO) {
+        this.dateO = dateO;
+    }
     
     
     
+    public void addAffectation(){
+        try {
+            Article a = donneeService.findByDesignation(nomArticle);
+            affectation.setArticle(a);
+            affectations.add(affectation);
+            System.out.println("\n\n ============    J'ai exactement " + affectations.size() + " articles\n\n");
+            affectation = new Affectation();
+            for (Affectation affectation1 : affectations) {
+                System.out.println(affectation1);
+            }
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    public String saveOrdre() {
+        try {
+            ordreSortie.setEtatType(EtatType.Encour);
+            sortieService.saveOrUpdateOrdre(ordreSortie);
+            ordreSortie = new OrdreSortie();
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
+
+    public String updateOrdre() {
+        try {
+            sortieService.saveOrUpdateBonSortie(bonSortie);
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
+
+    public String saveBonSortie() {
+        try {
+            Personnel p = personnelService.findPersonnelByNom(nomPersonnel);
+            if (p != null) {
+                bonSortie.setPersonnel(p);
+            }
+            
+            OrdreSortie o = sortieService.findByDateString(dateO);
+            System.out.println("===================  L'ordre de sortie est =======    "+ o);
+            if(o != null){
+                System.out.println("\n\nJ'ai l'ordre =====================   " + o);
+                bonSortie.setOrdeSortie(o);
+            }
+            sortieService.saveOrUpdateBonSortie(bonSortie);
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
+
+    public String updateBonSortie() {
+        try {
+            sortieService.saveOrUpdateBonSortie(bonSortie);
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
     
+    public String finirBon(){
+        for (Affectation affectation1 : affectations) {
+            try {
+                affectation1.setBonSortie(bonSortie);
+                sortieService.saveOrUpdateAffectation(affectation1);
+            } catch (ServiceException ex) {
+                Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        affectations = new ArrayList<>();
+        return "";
+    }
     
+    public void produceBs(){
+        System.out.println("Je suis ici \n\n\n");
+        System.out.println(bonSortie);
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        Object response = context.getExternalContext().getResponse();
+        if (response instanceof HttpServletResponse) {
+            try {
+                HttpServletResponse hsr = (HttpServletResponse) response;
+                hsr.setContentType("application/pdf");
+                hsr.setHeader("Content-Disposition", "attachment; filename=pv.pdf");
+                
+               // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                sortieService.imprimerBsp(bonSortie.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                context.responseComplete();
+            } catch (IOException ex) {
+                Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ServiceException ex) {
+                Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+   
+
 }

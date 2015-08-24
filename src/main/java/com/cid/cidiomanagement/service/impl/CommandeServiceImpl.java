@@ -1,5 +1,6 @@
 package com.cid.cidiomanagement.service.impl;
 
+import co.royken.convert.FrenchNumberToWords;
 import com.cid.cidiomanagement.dao.IBonCommandeDao;
 import com.cid.cidiomanagement.dao.ICommandeDao;
 import com.cid.cidiomanagement.dao.IPrestataireDao;
@@ -18,16 +19,30 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPTableEvent;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.royken.generic.dao.DataAccessException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.cglib.core.Local;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -161,83 +176,21 @@ public class CommandeServiceImpl implements ICommandeService {
 
     @Override
     public void produireOrdreEntree(Long bonCommandeId, OutputStream stream) throws ServiceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        try {
+            BonCommande bc = bonCommandeDao.findById(bonCommandeId);
+            Document doc = new Document();
+            PdfWriter.getInstance(doc, stream);
+            doc.setPageSize(PageSize.A4);
+            doc.open();
+            Util.produceHeader(doc);
+            produceOrdreEntree(bc, doc);
+            doc.close();
 
-    private void produceHeader(Document doc) throws Exception {
-        Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 8);
-        Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
-        // Définition de l'entete du document
-        StringBuilder builder = new StringBuilder("REPUBLIQUE DU CAMEROUN\n");
-        builder.append("Paix-Travail-Patrie\n");
-        builder.append("----------\n");
-        builder.append("MINISTERE DES FINANCES\n");
-        builder.append("----------\n");
-        builder.append("SECRETARIAT GENERAL\n");
-        builder.append("----------\n");
-        builder.append("CENTRE NATIONAL DE DEVELOPPEMENT DE L'INFORMATIQUE (CENADI)\n");
-        builder.append("----------\n");
-        builder.append("CENTRE INFORMATIQUE DE DOUALA\n");
-        builder.append("----------\n");
-
-        Paragraph frecnch = new Paragraph(new Phrase(builder.toString(), bf12));
-        frecnch.setAlignment(Element.ALIGN_CENTER);
-        builder = new StringBuilder();
-        builder.append("REPUBLIC OF CAMEROON\n");
-        builder.append("Peace-Work-Fatherland\n");
-        builder.append("----------\n");
-        builder.append("MINISTRY OF FINANCES\n");
-        builder.append("----------\n");
-        builder.append("SECRETARY GENERAL\n");
-        builder.append("----------\n");
-        builder.append("NATIONAL CENTRE FOR THE DEVELOPMENT OF COMPUTER SERVICES\n");
-        builder.append("----------\n");
-        builder.append("DOUALA COMPUTER CENTRE\n");
-        builder.append("----------\n");
-
-        Paragraph eng = new Paragraph(new Phrase(builder.toString(), bf12));
-        eng.setAlignment(Element.ALIGN_CENTER);
-//        builder = new StringBuilder();
-//        builder.append("B.P. / P.O. Box: 46 Maroua\n");
-//       
-//        builder.append("Email: institutsupsahel.uma@gmail.com\n");
-//        builder.append("Site: http://www.uni-maroua.citi.cm");
-//        Paragraph coordonnees = new Paragraph(new Phrase(builder.toString(), bf12));
-//        coordonnees.setAlignment(Element.ALIGN_CENTER);
-        float widths2[] = {3, 4, 3};
-        PdfPTable header = new PdfPTable(widths2);
-        header.setWidthPercentage(100);
-        PdfPCell cell1;
-        cell1 = new PdfPCell(frecnch);
-        cell1.setBorderColor(BaseColor.WHITE);
-        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        header.addCell(cell1);
-        URL url = new ClassPathResource("entete.png").getURL();
-        //java.awt.Image img = ImageIO.read(new File("logo4.png"));
-        //Image logo = Image.getInstance(img, null);
-        Image logo = Image.getInstance(url);
-        logo.scalePercent(65f);
-        Paragraph p = new Paragraph();
-        p.setAlignment(Element.ALIGN_CENTER);
-        p.add(new Paragraph(new Chunk(logo, 0, -15, true)));
-        PdfPCell cel = new PdfPCell(p);
-        cel.setBorderColor(BaseColor.WHITE);
-        cel.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cel.setVerticalAlignment(Element.ALIGN_CENTER);
-        header.addCell(cel);
-        cell1 = new PdfPCell(eng);
-        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell1.setBorderColor(BaseColor.WHITE);
-        header.addCell(cell1);
-//        cell1 = new PdfPCell(coordonnees);
-//        cell1.setColspan(10);
-//        cell1.setBorderColor(BaseColor.WHITE);
-//        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-//        header.addCell(cell1);
-        doc.add(header);
-
-        doc.add(new Chunk("\n\n\n\n"));
-
+        } catch (DataAccessException | DocumentException ex) {
+            Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -256,11 +209,10 @@ public class CommandeServiceImpl implements ICommandeService {
             PdfWriter.getInstance(doc, outputStream);
             doc.setPageSize(PageSize.A4);
             doc.open();
-            produceHeader(doc);
+            Util.produceHeader(doc);
             produireProcesVerbal(doc);
-
             doc.newPage();
-            produceHeader(doc);
+            Util.produceHeader(doc);
             produceBon(doc, bon, objet, p);
             doc.close();
         } catch (DocumentException ex) {
@@ -283,20 +235,20 @@ public class CommandeServiceImpl implements ICommandeService {
             p1.setAlignment(Element.ALIGN_CENTER);
             doc.add(p1);
 
-            doc.add(new Chunk("\n\n"));
+            doc.add(new Chunk("\n"));
             doc.add(new Chunk(tab + tab + tab + tab));
 
             doc.add(new Chunk("L'an deux mil quinze et le ........................... du mois de .................. à ..............heures\n", bf12));
             doc.add(new Chunk(tab + tab));
-            doc.add(new Chunk("s'est tenue au Centre Informatique de Douala, une commission composée de:\n", bf12));
+            doc.add(new Chunk("s'est tenue au Centre Informatique de Douala, une commission composée de:\n\n", bf12));
             doc.add(new Chunk(tab + tab + tab));
-            doc.add(new Chunk("1) ....................................................................... Gestion de crédits ou son  ", bf12));
+            doc.add(new Chunk("1) .......................................................................... Gestion de crédits ou son  ", bf12));
             doc.add(new Chunk("(Président)\n", fontEntete));
             doc.add(new Chunk(tab + tab + tab));
             doc.add(new Chunk("2) .............................................................................. Comptable matières ", bf12));
             doc.add(new Chunk("(Rapporteur)\n", fontEntete));
             doc.add(new Chunk(tab + tab + tab));
-            doc.add(new Chunk("3) .............................................................................. Ingénieur éventuel ", bf12));
+            doc.add(new Chunk("3) .................................................................................. Ingénieur éventuel ", bf12));
             doc.add(new Chunk("(Rapporteur)\n", fontEntete));
             doc.add(new Chunk(tab + tab + tab));
             doc.add(new Chunk("4) ................................................................. Fournisseur et son représentant ", bf12));
@@ -314,9 +266,9 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(expo);
             doc.add(new Chunk(" ..........................du ................. d'un\n", bf12));
             doc.add(new Chunk(tab + tab));
-            doc.add(new Chunk("montant de ...........................................................................................................................\n", bf12));
+            doc.add(new Chunk("montant de .............................................................................................................................\n", bf12));
             doc.add(new Chunk(tab + tab));
-            doc.add(new Chunk(".............................................................................................................................................\n", bf12));
+            doc.add(new Chunk(".................................................................................................................................................\n", bf12));
             doc.add(new Chunk(tab + tab));
             doc.add(new Chunk("Du prestataire (raison sociale) ..............................................................................................\n\n", bf12));
 
@@ -330,7 +282,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(new Chunk(tab + tab + tab + tab));
 
             doc.add(new Chunk("Le Comptable-matières", fontEntete));
-            doc.add(new Chunk(tab + tab + tab + tab));
+            doc.add(new Chunk(tab + tab + tab + tab + tab + tab));
 
             doc.add(new Chunk("Le Fournisseur", fontEntete));
 
@@ -346,6 +298,7 @@ public class CommandeServiceImpl implements ICommandeService {
         System.out.println("Les données =============================================\n");
         try {
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+            Font bf10 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
             Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
@@ -354,8 +307,14 @@ public class CommandeServiceImpl implements ICommandeService {
                 System.out.println(commande);
             }
 
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(bon.getDateCommande());
+            int annee = cal.get(Calendar.YEAR);
+            String toto = String.valueOf(annee);
+            String ann = toto.substring(1, toto.length());
             Chunk ch = new Chunk("BCA N", fontEntete);
             Chunk expo = new Chunk("o", bf1);
+            Chunk chc = new Chunk(ann, fontEntete);
             expo.setTextRise(5f);
             doc.add(expo);
             Chunk underline = new Chunk(" /           /MINFI/SG/CENADI/CID", fontEntete);
@@ -363,10 +322,11 @@ public class CommandeServiceImpl implements ICommandeService {
             Paragraph p1 = new Paragraph();
             p1.add(ch);
             p1.add(expo);
+            p1.add(chc);
             p1.add(underline);
             p1.setAlignment(Element.ALIGN_CENTER);
             doc.add(p1);
-            doc.add(new Chunk("\n\n"));
+            doc.add(new Chunk("\n"));
             Chunk ch2 = new Chunk("BON DE COMMANDE ADMINISTRATIF", fontEntete);
             Paragraph p = new Paragraph(ch2);
             p.setAlignment(Element.ALIGN_CENTER);
@@ -381,8 +341,8 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(new Chunk(prestataire.getNom() + "\n", bf12));
             doc.add(new Chunk("Adresse .....", bf12));
             doc.add(new Chunk(prestataire.getAdresse(), bf12));
-            doc.add(new Chunk("  BP       ", bf12));
-            doc.add(new Chunk("  Douala       ", bf12));
+            //doc.add(new Chunk("  BP       ", bf12));
+            //doc.add(new Chunk("  Douala       ", bf12));
             doc.add(new Chunk("  Tél : ", bf12));
             doc.add(new Chunk(prestataire.getTelephone() + "\n", bf12));
             doc.add(new Chunk("N", bf12));
@@ -391,10 +351,11 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(new Chunk(prestataire.getNoContribuable() + "\n", bf12));
 
             Chunk underline2 = new Chunk("Objet : ", fontEntete);
-            underline.setUnderline(0.1f, -2f);
+            underline2.setUnderline(0.1f, -2f);
             Paragraph p3 = new Paragraph(underline2);
+            //p3.add(underline2);
+            p3.add(new Chunk(objet, bf12));
             doc.add(p3);
-            doc.add(new Chunk(objet, bf12));
             doc.add(new Chunk("\n"));
 
             float relatiewidth[] = {3, 5, 1, 3, 3};
@@ -410,38 +371,173 @@ public class CommandeServiceImpl implements ICommandeService {
 
             for (Commande commande : commandes) {
 
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getReference(), bf12));
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getDesignation(), bf12));
-                products.addCell(createBonDefaultFHeader(String.valueOf(commande.getNombre()), bf12));
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getPrixUnitaire() + "", bf12));
+                products.addCell(createBonDefaultFHeader(commande.getArticle().getReference(), bf10));
+                products.addCell(createBonDefaultFHeader(commande.getArticle().getDesignation(), bf10));
+                products.addCell(createBonDefaultFHeader(String.valueOf(commande.getNombre()), bf10));
+                products.addCell(createBonDefaultFHeader(commande.getArticle().getPrixUnitaire() + "", bf10));
                 double prixTemp = commande.getNombre() * commande.getArticle().getPrixUnitaire();
                 prixTotal += prixTemp;
-                products.addCell(createBonDefaultFHeader(prixTemp + "", bf12));
+                products.addCell(createBonDefaultFHeader(prixTemp + "", bf10));
             }
 
             PdfPTable footer = new PdfPTable(relatiewidth);
             PdfPCell cell1 = new PdfPCell();
-            
-            products.addCell(createFooterCell("Total HT", bf12));
-            products.addCell(createFooterValueCell(prixTotal+"", bf12));
-            
-            double prixtva = prixTotal * 19.25 /100;
-            products.addCell(createFooterCell("TVA 19.25%", bf12));
-            products.addCell(createFooterValueCell(prixtva+"", bf12));
-            products.addCell(createFooterCell("AIR 5.5%", bf12));
-            
-            double prixAir = prixTotal * 5.5 /100;
-            products.addCell(createFooterValueCell(prixAir+"", bf12));
-            products.addCell(createFooterCell("Net à percevoir", bf12));
-            
-            
-            products.addCell(createFooterValueCell("    ", bf12));
-            products.addCell(createFooterCell("Total TTC", bf12));
-            products.addCell(createFooterValueCell("    ", bf12));
+
+            Chunk to = new Chunk("Total HT .................................................................................", bf10);
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            // cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setColspan(4);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            //cell1.setBorderColorLeft(BaseColor.BLACK);
+
+            // products.addCell(createFooterCell("Total HT", bf12));
+            products.addCell(cell1);
+            to = new Chunk(prixTotal + "", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            products.addCell(cell1);
+
+            double prixtva = prixTotal * 19.25 / 100;
+
+            to = new Chunk("TVA 19.25% .................................................................................", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthTop(0.5f);
+
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setColspan(4);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            //cell1.setBorderColorLeft(BaseColor.BLACK);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+
+            //products.addCell(createFooterCell("TVA 19.25%", bf12));
+            products.addCell(cell1);
+
+            to = new Chunk(prixtva + "", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            products.addCell(cell1);
+
+            //    products.addCell(createFooterValueCell(prixtva+"", bf12));
+            String air = "AIR " + bon.getPrestataire().getAir() + "% .................................................................................";
+
+            to = new Chunk(air, bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthTop(0.5f);
+            // cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setColspan(4);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            //cell1.setBorderColorLeft(BaseColor.BLACK);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+
+            products.addCell(cell1);
+
+            double prixAir = prixTotal * bon.getPrestataire().getAir() / 100;
+
+            to = new Chunk(prixAir + "", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            products.addCell(cell1);
+
+            //products.addCell(createFooterValueCell(prixAir+"", bf12));
+            to = new Chunk("Net à percevoir .................................................................................", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthTop(0.5f);
+            // cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setColspan(4);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            //cell1.setBorderColorLeft(BaseColor.BLACK);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+
+            products.addCell(cell1);
+
+            to = new Chunk((prixTotal - prixAir) + "", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setBorderColorBottom(BaseColor.WHITE);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+            products.addCell(cell1);
+
+            //  products.addCell(createFooterValueCell((prixTotal - prixAir)+"", bf12));
+            to = new Chunk("Total TTC .................................................................................", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthTop(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setColspan(4);
+            //cell1.setBorderColorBottom(BaseColor.WHITE);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+            // cell1.setBorderColorLeft(BaseColor.WHITE);
+
+            products.addCell(cell1);
+
+            to = new Chunk((prixTotal + prixtva) + "", bf10);
+            cell1 = new PdfPCell();
+            cell1.addElement(to);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorderWidthBottom(0.5f);
+            //cell1.setPaddingBottom(4f);
+            //cell1.setPaddingTop(5f);
+            cell1.setBorderColorTop(BaseColor.WHITE);
+            products.addCell(cell1);
+            // products.addCell(createFooterValueCell((prixTotal + prixtva)+"", bf12));
             doc.add(products);
 
-            Chunk arete = new Chunk(tab + tab + "Arrête le présente Bon de Commande Administratif à la somme de :\n", bf12);
+            Chunk arete = new Chunk(tab + tab + "Arrête le présente Bon de Commande Administratif à la somme de : ", bf12);
             doc.add(arete);
+            // String montant = String.valueOf(prixTotal + prixtva);
+            int entier = (int) Math.floor(prixtva + prixTotal);
+            int decimal = (int) Math.floor(((prixtva + prixTotal) - entier) * 100.0f);
+            String montant = FrenchNumberToWords.convert(entier);
+            if (decimal > 0) {
+                montant += ", " + FrenchNumberToWords.convert(decimal);
+            }
+            Chunk mont = new Chunk(montant + " Francs", fontEntete);
+            doc.add(mont);
             doc.add(new Chunk("\n"));
             Chunk delai = new Chunk(tab + tab + "Délai de livraison : ", fontEntete);
             doc.add(delai);
@@ -473,9 +569,347 @@ public class CommandeServiceImpl implements ICommandeService {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void produceOrdreEntree(Document doc){
-        
+
+    private void produceOrdreEntree(BonCommande bc, Document doc) {
+        try {
+            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+            Font bf12i = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
+            Font bf10 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
+            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
+            Font bf1b = new Font(Font.FontFamily.TIMES_ROMAN,10,Font.BOLD);
+            Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+            Font fontBig = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+            Font fontBig2 = new Font(Font.FontFamily.TIMES_ROMAN, 14);
+
+            float relativewidth[] = {4, 2, 6};
+            PdfPTable firstTable = new PdfPTable(relativewidth);
+            firstTable.setWidthPercentage(100);
+            Phrase post = new Phrase("POSTE COMPTABLE ........................................\n", fontEntete);
+            Phrase postEng = new Phrase("ACCOUNTING POST\n .................................................................", bf10);
+            Phrase ph1 = new Phrase();
+            ph1.add(post);
+            ph1.add(postEng);
+            PdfPCell cell1 = new PdfPCell(ph1);
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.setColspan(2);
+            //cell1.setPaddingBottom(2f);
+            cell1.setPaddingTop(2f);
+            firstTable.addCell(cell1);
+
+            Phrase code = new Phrase("CODE POSTE COMPTABLE\n", fontEntete);
+            Phrase codeEng = new Phrase("ACCOUNTING POST CODE\n", bf10);
+            Phrase codeA = new Phrase("CODE ANNEXE...............................\n", fontEntete);
+            Phrase codeAe = new Phrase("ANNEXE CODE", bf10);
+            ph1 = new Phrase();
+            ph1.add(code);
+            ph1.add(codeEng);
+            ph1.add(new Phrase("\n"));
+            ph1.add(codeA);
+            ph1.add(codeAe);
+            cell1 = new PdfPCell(ph1);
+            cell1.setRowspan(3);
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
+            //cell1.setPaddingBottom(2f);
+            cell1.setPaddingTop(2f);
+            firstTable.addCell(cell1);
+
+            Phrase serv = new Phrase("SERVICE COMPTABLE AUPRES DE ..............\n", fontEntete);
+            Phrase serve = new Phrase("ACCOUNTING SERVICE TO \n ...................................................................", bf10);
+
+            ph1 = new Phrase();
+            ph1.add(serv);
+            ph1.add(serve);
+            cell1 = new PdfPCell(ph1);
+            cell1.setBorderColor(BaseColor.WHITE);
+            //cell1.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+            cell1.setColspan(2);
+            //cell1.setPaddingBottom(2f);
+            cell1.setPaddingTop(2f);
+            firstTable.addCell(cell1);
+
+            Phrase num = new Phrase("Numéro d'ordre au journal d'annexe : ..................\n", fontEntete);
+            Phrase nume = new Phrase("Order number in the journal of the store ", bf10);
+            Chunk underline = new Chunk("               ", fontEntete);
+            underline.setUnderline(0.2f, -2f);
+            ph1 = new Phrase();
+            ph1.add(num);
+            ph1.add(nume);
+            ph1.add(underline);
+            cell1 = new PdfPCell();
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.addElement(ph1);
+            cell1.setColspan(2);
+            // cell1.setPaddingBottom(2f);
+            cell1.setPaddingTop(2f);
+            firstTable.addCell(cell1);
+            doc.add(firstTable);
+            float relativewidth2[] = {5, 9};
+            PdfPTable or = new PdfPTable(relativewidth2);
+            or.setWidthPercentage(100);
+            cell1 = new PdfPCell();
+            cell1.setBorderColor(BaseColor.WHITE);
+            or.addCell(cell1);
+            Chunk ordre = new Chunk("ORDRE D'ENTREE N", fontBig);
+            Chunk expo = new Chunk("o", fontEntete);
+            expo.setTextRise(5f);
+            Chunk un = new Chunk(" (1)..................................\n", fontBig);
+            Chunk in = new Chunk("INCOMING ORDER No.", fontBig2);
+            Chunk under = new Chunk("                            \n", fontBig);
+            under.setUnderline(0.5f, -2f);
+            Phrase ph = new Phrase();
+            ph.add(ordre);
+            ph.add(expo);
+            ph.add(un);
+            ph.add(in);
+            ph.add(under);
+            cell1 = new PdfPCell();
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.addElement(ph);
+            or.addCell(cell1);
+            doc.add(or);
+            StringBuilder stb = new StringBuilder();
+            stb.append("EXERCICE ...................................................................\n")
+                    .append("CHAPITRE .............................................DU BUDGET\n")
+                    .append("IMPUTATION BUDGETAIRE : ..................................\n")
+                    .append("........................................................................................\n")
+                    .append("........................................................................................\n")
+                    .append("........................................................................................\n");
+            Paragraph exer = new Paragraph(stb.toString(), bf10);
+            exer.setAlignment(Element.ALIGN_CENTER);
+            doc.add(exer);
+            Chunk seront = new Chunk("Seront portés en entrée, dans les écritures comptables du Chef de Poste Comptable de la comptabilité matières, les matières et objets ci-dessous désignés provenant de (2) .............", bf10);
+            doc.add(seront);
+
+            float relativewidth3[] = {1, 2, 7, 2, 3, 3, 4, 4, 3};
+            PdfPTable table = new PdfPTable(relativewidth3);
+            table.setWidthPercentage(100);
+            //table.setHeaderRows(2);
+            PdfPCell cell = new PdfPCell();
+            Paragraph par = new Paragraph("NUMEROS", bf12);
+            par.setAlignment(Element.ALIGN_CENTER);
+            Chunk numer = new Chunk();
+            cell.addElement(par);
+            cell.setColspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("DESIGNATION DES MATIERES ET OBJETS\n", bf12);
+            Chunk eng = new Chunk("DESCRIPTION OF MATERIAL", bf12i);
+            Paragraph p = new Paragraph();
+            p.add(numer);
+            p.add(eng);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell = new PdfPCell();
+            cell.addElement(p);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setRowspan(2);
+            table.addCell(cell);
+
+            numer = new Chunk("ESPECES\nDES\nUNITES\n", bf12);
+            eng = new Chunk("UNIT OF\n MEASURE", bf12i);
+            cell = new PdfPCell();
+            p = new Paragraph();
+            p.add(numer);
+            p.add(eng);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setRowspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("QUANTITES\n", bf12);
+            eng = new Chunk("QUANTITIES", bf12i);
+            p = new Paragraph();
+            p.add(numer);
+            p.add(eng);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell = new PdfPCell();
+            cell.addElement(p);
+            cell.setRowspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("PRIX DE L'UNITE\n", bf12);
+            cell = new PdfPCell();
+            eng = new Chunk("UNIT PRICE", bf12i);
+            p = new Paragraph();
+            p.add(numer);
+            p.add(eng);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setRowspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("VALEURS", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setColspan(2);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("NUMERO DE LA PIECE\n JUSTIFICATIVE\n DE SORTIE", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setRowspan(2);
+            cell.setRotation(90);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("DE FOLIO\n DU GRAND LIVRE JOURNAL", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setRotation(90);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("D'ORDRE\n DE LA CLASSE\n DE NOMENCLATURE\n SOMMAIRE", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setRotation(90);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("PARTIELLES", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            numer = new Chunk("PAR CLASSE DE LA NOMENCLATURE SOMMAIRE", bf12);
+            cell = new PdfPCell();
+            p = new Paragraph(numer);
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(p);
+            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+
+            List<Commande> commandes = commandeDao.findByBon(bc);
+            Set<String> cat = new TreeSet<>();
+            cat = getCategories(commandes);
+            Map<String, List<Commande>> data = transform(commandes);
+            double prixFinal = 0.0;
+            int index = 1;
+            for (String cat1 : cat) {
+                double prixTemp = 0.0;
+                List<Commande> temp = data.get(cat1);
+                Collections.sort(temp, new Comparator<Commande>() {
+
+                    @Override
+                    public int compare(Commande t, Commande t1) {
+                        return t.getArticle().getDesignation().compareToIgnoreCase(t1.getArticle().getDesignation());
+                    }
+
+                });
+
+                for (int i = 0; i < temp.size(); i++) {
+                    table.addCell(createDotedValueCell(String.valueOf(index++), bf12));
+                    table.addCell(createDotedValueCell(temp.get(i).getCategorie(), bf12));
+                    table.addCell(createDotedValueCell(temp.get(i).getArticle().getDesignation(), bf12));
+                    table.addCell(createDotedValueCell(temp.get(i).getArticle().getConditionnement(), bf12));
+                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getNombre()), bf12));
+                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getPrixArticle()), bf12));
+                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getNombre() * temp.get(i).getPrixArticle()), bf12));
+                    prixTemp += temp.get(i).getNombre() * temp.get(i).getPrixArticle();
+                    if (i != temp.size() - 1) {
+                        table.addCell(createDotedValueCell("", bf12));
+                        table.addCell(createDotedValueCell("", bf12));
+                    } else {
+                        table.addCell(createDotedValueCell(String.valueOf(prixTemp), bf12));
+                        table.addCell(createDotedValueCell("", bf12));
+                    }
+                }
+                prixFinal += prixTemp;
+            }
+            p = new Paragraph("TOTAL", fontEntete);
+            cell1 = new PdfPCell();
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell1.addElement(p);
+            cell1.setColspan(6);
+            table.addCell(cell1);
+            p = new Paragraph(String.valueOf(prixFinal), fontEntete);
+            cell1 = new PdfPCell();
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell1.addElement(p);
+            //cell1.setColspan(6);
+            table.addCell(cell1);
+            p = new Paragraph(String.valueOf(prixFinal), fontEntete);
+            cell1 = new PdfPCell();
+            p.setAlignment(Element.ALIGN_CENTER);
+            cell1.addElement(p);
+            //cell1.setColspan(6);
+            table.addCell(cell1);
+
+            table.completeRow();
+
+            doc.add(table);
+            int nombre = commandes.size();
+            int prix = (int) Math.floor(prixFinal);
+            String prixS = FrenchNumberToWords.convert(prix);
+            Chunk arete = new Chunk("Arrêté le présent ordre d'entrée à ", bf1);
+            String nomc = FrenchNumberToWords.convert(nombre);
+            Chunk art = new Chunk(nombre + " ("+nomc.toUpperCase() +")", bf1b);
+            Chunk article = new Chunk(" articles, évalués à la somme de: ", bf1);
+            Chunk prixL = new Chunk(prixS.toUpperCase() + " FRANCS CFA", bf1b);
+            p = new Paragraph();
+            p.add(arete);
+            p.add(art);
+            p.add(article);
+            p.add(prixL);
+            doc.add(p);
+            doc.add(new Chunk("\n"));
+            firstTable = new PdfPTable(relativewidth);
+            firstTable.setWidthPercentage(100);
+            Calendar c = Calendar.getInstance();
+            String moi = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE );
+            int annee = c.get(Calendar.YEAR);
+            int jour = c.get(Calendar.DATE);
+            numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facute (No facture) du (Date facture)\n",bf1);
+            Chunk date = new Chunk(" A Douala , le ", fontEntete);
+            Chunk value = new Chunk(jour + " " + moi + " "+ annee +"\n", fontEntete);
+            Chunk ordo = new Chunk("L'Odonnateur-Matières", fontEntete);
+            p = new Paragraph();
+            p.add(numer);
+            p.add(date);
+            p.add(value);
+            p.add(ordo);
+            p.setAlignment(Element.ALIGN_JUSTIFIED);
+            cell1 = new PdfPCell();
+            cell1.addElement(p);
+            firstTable.addCell(cell1);
+            firstTable.addCell(new PdfPCell());
+            
+            numer = new Chunk("\n");
+            ordo = new Chunk("DECLARATION DE PRISE EN CHARGE\n", fontEntete);
+            value = new Chunk("     Le Chef de poste comptable de la comptabilité matières déclare avoir pris en charge et mis en approvisionnement les matières et objets dans le tableau ci-dessus.\n",bf1);
+            
+
+        } catch (DocumentException | DataAccessException ex) {
+            Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private PdfPCell createBonDefaultFHeader(String content, Font bf) {
@@ -518,5 +952,86 @@ public class CommandeServiceImpl implements ICommandeService {
         cell.setBorderColorBottom(BaseColor.WHITE);
         cell.setBorderColorTop(BaseColor.WHITE);
         return cell;
+    }
+
+    private static Set<String> getCategories(List<Commande> commandes) {
+        Set<String> result = new HashSet<>();
+        for (Commande commande : commandes) {
+            result.add(commande.getCategorie());
+        }
+        return result;
+    }
+
+    private static Map<String, List<Commande>> transform(List<Commande> commandes) {
+
+        Map<String, List<Commande>> result = new HashMap<>();
+        Set<String> cat = getCategories(commandes);
+        for (String cat1 : cat) {
+            List<Commande> temp = new ArrayList<>();
+            for (Commande com : commandes) {
+                if (com.getCategorie().equals(cat1)) {
+                    temp.add(com);
+                }
+            }
+            result.put(cat1, temp);
+        }
+        return result;
+    }
+
+    /*
+     cell.setCellEvent(app.new DottedCell());
+     cell.setBorder(PdfPCell.NO_BORDER);
+     */
+    private PdfPCell createDotedValueCell(String content, Font bf) {
+        PdfPCell cell = new PdfPCell(new Phrase(content, bf));
+        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
+        cell.setCellEvent(this.new DottedCell());
+        //cell.setBorder(PdfPCell.NO_BORDER);
+
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingBottom(4f);
+        cell.setPaddingTop(5f);
+        cell.setBorderWidth(0.01f);
+        cell.setBorderColorBottom(BaseColor.WHITE);
+        cell.setBorderColorTop(BaseColor.WHITE);
+        return cell;
+    }
+
+    class DottedCell implements PdfPCellEvent {
+
+        @Override
+        public void cellLayout(PdfPCell cell, Rectangle position,
+                PdfContentByte[] canvases) {
+            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+            canvas.setLineDash(1f, 1f);
+            canvas.rectangle(position.getLeft(), position.getBottom(),
+                    position.getWidth(), position.getHeight());
+            canvas.stroke();
+        }
+    }
+
+    class DottedCells implements PdfPTableEvent {
+
+        @Override
+        public void tableLayout(PdfPTable table, float[][] widths,
+                float[] heights, int headerRows, int rowStart,
+                PdfContentByte[] canvases) {
+            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+            canvas.setLineDash(3f, 3f);
+            float llx = widths[0][0];
+            float urx = widths[0][widths.length];
+            for (int i = 0; i < heights.length; i++) {
+                canvas.moveTo(llx, heights[i]);
+                canvas.lineTo(urx, heights[i]);
+            }
+            for (int i = 0; i < widths.length; i++) {
+                for (int j = 0; j < widths[i].length; j++) {
+                    canvas.moveTo(widths[i][j], heights[i]);
+                    canvas.lineTo(widths[i][j], heights[i + 1]);
+                }
+            }
+            canvas.stroke();
+        }
     }
 }
