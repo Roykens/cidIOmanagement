@@ -35,6 +35,10 @@ public class Affectation implements Serializable{
     @Min(0)
     private Integer nombre;
     
+    @Basic
+    @Min(0)
+    private int prix;
+    
     @OneToOne
     private Article article;
     
@@ -99,6 +103,16 @@ public class Affectation implements Serializable{
     public void setObservation(String observation) {
         this.observation = observation;
     }
+
+    public int getPrix() {
+        return prix;
+    }
+
+    public void setPrix(int prix) {
+        this.prix = prix;
+    }
+    
+    
     
     
 
@@ -108,6 +122,7 @@ public class Affectation implements Serializable{
         hash = 97 * hash + Objects.hashCode(this.id);
         hash = 97 * hash + Objects.hashCode(this.qteDemandee);
         hash = 97 * hash + Objects.hashCode(this.nombre);
+        hash = 97 * hash + Objects.hashCode(this.prix);
         return hash;
     }
 
@@ -126,14 +141,15 @@ public class Affectation implements Serializable{
         if (!Objects.equals(this.qteDemandee, other.qteDemandee)) {
             return false;
         }
+        
+        if (!Objects.equals(this.prix, other.prix)) {
+            return false;
+        }
         return Objects.equals(this.nombre, other.nombre);
     }
 
     @Override
     public String toString() {
-        return "Affectation{" + "id=" + id + ", qteDemandee=" + qteDemandee + ", nombre=" + nombre + '}';
+        return "Affectation{" + "id=" + id + ", qteDemandee=" + qteDemandee + ", nombre=" + nombre + ", prix=" + prix + ", article=" + article + ", observation=" + observation + '}';
     }
-    
-    
-    
 }

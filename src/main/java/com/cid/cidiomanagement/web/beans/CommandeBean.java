@@ -78,21 +78,6 @@ public class CommandeBean {
         this.prestataireService = prestataireService;
     }
 
-    public List<Commande> getTrash() {
-        Article art = new Article();
-        art.setDesignation("un article");
-        Commande com = new Commande();
-        com.setNombre(4);
-        com.setArticle(art);
-        List<Commande> coms = new ArrayList<Commande>();
-        coms.add(com);
-        coms.add(com);
-        coms.add(com);
-        coms.add(com);
-        coms.add(com);
-        return coms;
-    }
-
     public Commande getCommande() {
         return commande;
     }
@@ -226,6 +211,7 @@ public class CommandeBean {
                 Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        commandes = new ArrayList<>();
     }
 
     public String saveBonCommande() {
@@ -234,6 +220,7 @@ public class CommandeBean {
             System.out.println(prestataire1);
             bonCommande.setPrestataire(prestataire1);
             commandeService.saveOrUpdateBon(bonCommande);
+            bonCommande = new BonCommande();
         } catch (ServiceException ex) {
             Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
         }

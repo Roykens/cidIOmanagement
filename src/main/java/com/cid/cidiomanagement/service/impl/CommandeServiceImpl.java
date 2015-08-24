@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.cglib.core.Local;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
@@ -514,7 +515,7 @@ public class CommandeServiceImpl implements ICommandeService {
 
             products.addCell(cell1);
 
-            to = new Chunk((prixTotal + prixtva) + "", bf10);
+            to = new Chunk((int)Math.floor((prixTotal + prixtva)) + "", bf10);
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -533,10 +534,10 @@ public class CommandeServiceImpl implements ICommandeService {
             int entier = (int) Math.floor(prixtva + prixTotal);
             int decimal = (int) Math.floor(((prixtva + prixTotal) - entier) * 100.0f);
             String montant = FrenchNumberToWords.convert(entier);
-            if (decimal > 0) {
-                montant += ", " + FrenchNumberToWords.convert(decimal);
-            }
-            Chunk mont = new Chunk(montant + " Francs", fontEntete);
+//            if (decimal > 0) {
+//                montant += ", " + FrenchNumberToWords.convert(decimal);
+//            }
+            Chunk mont = new Chunk(montant + " Francs CFA", fontEntete);
             doc.add(mont);
             doc.add(new Chunk("\n"));
             Chunk delai = new Chunk(tab + tab + "Délai de livraison : ", fontEntete);
@@ -837,7 +838,8 @@ public class CommandeServiceImpl implements ICommandeService {
                         table.addCell(createDotedValueCell("", bf12));
                         table.addCell(createDotedValueCell("", bf12));
                     } else {
-                        table.addCell(createDotedValueCell(String.valueOf(prixTemp), bf12));
+                        
+                        table.addCell(createDotedValueCell(String.valueOf((int)Math.floor(prixTemp)), bf12));
                         table.addCell(createDotedValueCell("", bf12));
                     }
                 }
@@ -849,13 +851,13 @@ public class CommandeServiceImpl implements ICommandeService {
             cell1.addElement(p);
             cell1.setColspan(6);
             table.addCell(cell1);
-            p = new Paragraph(String.valueOf(prixFinal), fontEntete);
+            p = new Paragraph(String.valueOf((int)Math.floor(prixFinal)), fontEntete);
             cell1 = new PdfPCell();
             p.setAlignment(Element.ALIGN_CENTER);
             cell1.addElement(p);
             //cell1.setColspan(6);
             table.addCell(cell1);
-            p = new Paragraph(String.valueOf(prixFinal), fontEntete);
+            p = new Paragraph(String.valueOf((int)Math.floor(prixFinal)), fontEntete);
             cell1 = new PdfPCell();
             p.setAlignment(Element.ALIGN_CENTER);
             cell1.addElement(p);
@@ -880,10 +882,13 @@ public class CommandeServiceImpl implements ICommandeService {
             p.add(prixL);
             doc.add(p);
             doc.add(new Chunk("\n"));
-            firstTable = new PdfPTable(relativewidth);
+            
+            float relativewidth4[] = {6, 1, 6};
+            firstTable = new PdfPTable(relativewidth4);
             firstTable.setWidthPercentage(100);
             Calendar c = Calendar.getInstance();
             String moi = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE );
+            moi = WordUtils.capitalize(moi) ;
             int annee = c.get(Calendar.YEAR);
             int jour = c.get(Calendar.DATE);
             numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facute (No facture) du (Date facture)\n",bf1);
@@ -898,13 +903,33 @@ public class CommandeServiceImpl implements ICommandeService {
             p.setAlignment(Element.ALIGN_JUSTIFIED);
             cell1 = new PdfPCell();
             cell1.addElement(p);
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
             firstTable.addCell(cell1);
-            firstTable.addCell(new PdfPCell());
+            cell1 = new PdfPCell();
+            cell1.setBorderColor(BaseColor.WHITE);
+            firstTable.addCell(cell1);
             
-            numer = new Chunk("\n");
-            ordo = new Chunk("DECLARATION DE PRISE EN CHARGE\n", fontEntete);
-            value = new Chunk("     Le Chef de poste comptable de la comptabilité matières déclare avoir pris en charge et mis en approvisionnement les matières et objets dans le tableau ci-dessus.\n",bf1);
-            
+           // numer = new Chunk("\n");
+            ordo = new Chunk("\n    DECLARATION DE PRISE EN CHARGE\n", fontEntete);
+            numer = new Chunk("     Le Chef de poste comptable de la comptabilité matières déclare avoir pris en charge et mis en approvisionnement les matières et objets dans le tableau ci-dessus.\n",bf1);
+            Chunk chef = new Chunk("Le Chef de poste Comptable", fontEntete);
+            p = new Paragraph();
+            p.add(ordo);
+            p.add(numer);
+            p.add(date);
+            p.add(value);
+            p.add(ordo);
+            p.add(chef);
+            p.setAlignment(Element.ALIGN_JUSTIFIED);
+            cell1 = new PdfPCell();
+            cell1.addElement(p);
+            cell1.setBorderColor(BaseColor.WHITE);
+            cell1.setVerticalAlignment(Element.ALIGN_CENTER);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            firstTable.addCell(cell1);
+            doc.add(firstTable);
 
         } catch (DocumentException | DataAccessException ex) {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -985,7 +1010,7 @@ public class CommandeServiceImpl implements ICommandeService {
     private PdfPCell createDotedValueCell(String content, Font bf) {
         PdfPCell cell = new PdfPCell(new Phrase(content, bf));
         //cell.setBackgroundColor(new BaseColor(230, 230, 230));
-        cell.setCellEvent(this.new DottedCell());
+        cell.setCellEvent(this.new DottedCell2());
         //cell.setBorder(PdfPCell.NO_BORDER);
 
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -993,6 +1018,7 @@ public class CommandeServiceImpl implements ICommandeService {
         cell.setPaddingBottom(4f);
         cell.setPaddingTop(5f);
         cell.setBorderWidth(0.01f);
+        //cell.setBorderColorLeft(BaseColor.BLACK);
         cell.setBorderColorBottom(BaseColor.WHITE);
         cell.setBorderColorTop(BaseColor.WHITE);
         return cell;
@@ -1010,6 +1036,21 @@ public class CommandeServiceImpl implements ICommandeService {
             canvas.stroke();
         }
     }
+    
+    
+    class DottedCell2 implements PdfPCellEvent {
+    @Override
+    public void cellLayout(PdfPCell cell, Rectangle position,
+        PdfContentByte[] canvases) {
+        PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+        canvas.setLineDash(3f, 3f);
+        //canvas.moveTo(position.getLeft(), position.getTop());
+        canvas.lineTo(position.getRight(), position.getTop());
+        canvas.moveTo(position.getLeft(), position.getBottom());
+        canvas.lineTo(position.getRight(), position.getBottom());
+        canvas.stroke();
+    }
+}
 
     class DottedCells implements PdfPTableEvent {
 
