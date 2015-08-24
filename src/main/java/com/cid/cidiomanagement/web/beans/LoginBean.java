@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class LoginBean implements Serializable{
     
     private String userName = ""; 
@@ -83,6 +84,8 @@ public class LoginBean implements Serializable{
 //        }
             boolean result = utilisateurService.findUtilisateurByLoginAndPassword(userName, password);
             if(result){
+                HttpSession session = Util.getSession();
+            session.setAttribute("username", userName);
                 return "correct";
             }
             else{
@@ -104,10 +107,16 @@ public class LoginBean implements Serializable{
         return null;
     }
 
-    public String logout(){
-        SecurityContextHolder.clearContext();
-        return "loggedout";
-    }
+     public String logout() {
+      HttpSession session = Util.getSession();
+      session.invalidate();
+      return "login";
+   }
+     
+//    public String logout(){
+//        SecurityContextHolder.clearContext();
+//        return "loggedout";
+//    }
 
     public AuthenticationManager getAuthenticationManager() {
         return authenticationManager;
