@@ -2,6 +2,8 @@ package com.cid.cidiomanagement.service;
 
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.Categorie;
+import com.cid.cidiomanagement.service.util.ImportationResult;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,4 +46,6 @@ public interface IDonneeService extends Serializable{
     public Article findByReference(String reference) throws ServiceException;
     
     public Article findByDesignation(String designation) throws ServiceException;
+    
+    public ImportationResult importArticle(InputStream stream, Long idCategorie) throws ServiceException;
 }

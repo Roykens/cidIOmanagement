@@ -46,12 +46,34 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
+<!--    <listener>
+        <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletContextListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>OCPsoft Rewrite Filter</filter-name>
+        <filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>OCPsoft Rewrite Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>-->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
     
     <!-- Spring Security -->
-<!--    <filter>
+    <!--    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>

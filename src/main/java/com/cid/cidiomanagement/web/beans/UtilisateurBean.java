@@ -67,6 +67,16 @@ public class UtilisateurBean implements Serializable {
         this.utilisateurService = utilisateurService;
     }
 
+    public Utilisateur getUser() {
+        return user;
+    }
+
+    public void setUser(Utilisateur user) {
+        this.user = user;
+    }
+    
+    
+
     public List<Utilisateur> getUtilisateurs() {
         return utilisateurs;
     }

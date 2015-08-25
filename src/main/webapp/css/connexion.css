@@ -6,7 +6,7 @@ body{
     
 }
 #content{
-    background-image: url(../image/Finance.jpg);
+    background-image: url(../images/Finance.jpg);
     background-color: white;
     background-repeat: no-repeat;
     width: 1000px;
@@ -25,7 +25,7 @@ body{
     height: 89px;
 }*/
 #logo2{
-    background-image: url(../image/ho_slogan.png);
+    background-image: url(../images/ho_slogan.png);
     background-repeat: no-repeat;
     width: 495px;
     height: 89px;
@@ -45,7 +45,7 @@ body{
     
 }
 #logo{
-    background-image: url(../image/sabc_logo.gif);
+    background-image: url(../images/sabc_logo.gif);
     background-repeat: no-repeat;
     margin-left: 10px;
     width: 336px;
@@ -54,7 +54,7 @@ body{
 }
 
 #sabc{
-    background-image: url(../image/SABC_truct.PNG);
+    background-image: url(../images/SABC_truct.PNG);
     background-repeat: no-repeat;
     width: 159px;
     height: 113px;

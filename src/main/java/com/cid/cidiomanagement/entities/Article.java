@@ -120,15 +120,22 @@ public class Article implements Serializable{
         return quantite;
     }
 
-    public void setQuantité(Integer quantite) {
+    public void setQuantite(Integer quantite) {
         this.quantite = quantite;
     }
     
     
 
+//    @Override
+//    public String toString() {
+//        return  designation;
+//    }
+    
+    
+
     @Override
     public String toString() {
-        return  designation;
+        return "Article{" + "id=" + id + ", reference=" + reference + ", designation=" + designation + ", conditionnement=" + conditionnement + ", prixUnitaire=" + prixUnitaire + ", quantite=" + quantite + '}';
     }
 
     @Override

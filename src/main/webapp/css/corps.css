@@ -10,7 +10,7 @@ body{
 }
 
 #logo2{
-    background-image: url(../image/ho_slogan.png);
+    background-image: url(../images/ho_slogan.png);
     background-repeat: no-repeat;
     width: 495px;
     height: 89px;
@@ -19,7 +19,7 @@ body{
     margin-top: 25px;
 }
 #logo{
-    background-image: url(../image/sabc_logo.gif);
+    background-image: url(../images/sabc_logo.gif);
     background-repeat: no-repeat;
     width: 336px;
     height: 96px;
@@ -83,5 +83,5 @@ a {
     padding: 1px;
 }
 .disk{
-    background-image: url(../image/sabc_logo.gif);
+    background-image: url(../images/sabc_logo.gif);
 }

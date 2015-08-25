@@ -26,14 +26,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 @ManagedBean
 @SessionScoped
-public class LoginBean implements Serializable{
-    
-    private String userName = ""; 
+public class LoginBean implements Serializable {
+
+    private String userName = "";
     private String password = "";
-    
-    @ManagedProperty(value="#{authenticationManager}")
+
+    @ManagedProperty(value = "#{authenticationManager}")
     private AuthenticationManager authenticationManager;
-    
+
     @ManagedProperty(value = "#{IUtilisateurService}")
     private IUtilisateurService utilisateurService;
 
@@ -60,16 +60,13 @@ public class LoginBean implements Serializable{
     public void setUtilisateurService(IUtilisateurService utilisateurService) {
         this.utilisateurService = utilisateurService;
     }
-    
-    
 
     /**
      * Creates a new instance of LoginBean
      */
     public LoginBean() {
     }
-    
-    
+
     public String login() {
         try {
             //        try {
@@ -83,41 +80,38 @@ public class LoginBean implements Serializable{
 //            return "incorrect";
 //        }
             boolean result = utilisateurService.findUtilisateurByLoginAndPassword(userName, password);
-            if(result){
+            if (result) {
                 HttpSession session = Util.getSession();
-            session.setAttribute("username", userName);
+                session.setAttribute("username", userName);
                 return "correct";
-            }
-            else{
+            } else {
                 FacesContext.getCurrentInstance().addMessage(
-                    null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "Identifiants Invalides!",
-                    "Veuillez reéssayer!"));
+                        null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Identifiants Invalides!",
+                                "Veuillez reéssayer!"));
             }
-            
-            
+
         } catch (ServiceException ex) {
             Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "incorrect";
     }
-    
-     public String cancel() {
+
+    public String cancel() {
         return null;
     }
 
-     public String logout() {
-      HttpSession session = Util.getSession();
-      session.invalidate();
-      return "login";
-   }
-     
+    public String logout() {
+        HttpSession session = Util.getSession();
+        session.invalidate();
+        return "login";
+    }
+
 //    public String logout(){
 //        SecurityContextHolder.clearContext();
 //        return "loggedout";
 //    }
-
     public AuthenticationManager getAuthenticationManager() {
         return authenticationManager;
     }
@@ -125,6 +119,5 @@ public class LoginBean implements Serializable{
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-    
-    
+
 }

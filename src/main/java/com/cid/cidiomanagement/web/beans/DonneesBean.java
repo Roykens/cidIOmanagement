@@ -4,6 +4,7 @@ import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.Categorie;
 import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.ServiceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -27,6 +29,8 @@ public class DonneesBean {
 
     @ManagedProperty("#{IDonneeService}")
     private IDonneeService donneeService;
+    
+    private UploadedFile file;
     
     private Categorie categorie = new Categorie();
     
@@ -101,8 +105,19 @@ public class DonneesBean {
     }
 
     public Article getArticleChoisi() {
-        return articleChoisi;
+        return articleChoisi;        
     }
+
+    public UploadedFile getFile() {
+        file=null;
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+    
+    
 
     public void setArticleChoisi(Article articleChoisi) {
         this.articleChoisi = articleChoisi;
@@ -168,6 +183,7 @@ public class DonneesBean {
             Categorie cat = donneeService.findByNomenclature(reference);
             article.setCategorie(cat);
             donneeService.saveOrUpdateArticle(article);
+            reference = new String();
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -192,6 +208,21 @@ public class DonneesBean {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "deleteArticle";
+    }
+    
+    public void importArticle(){
+        if (file != null && reference!=null ) {
+            try {
+                Categorie cat = donneeService.findByNomenclature(reference);
+                donneeService.importArticle(file.getInputstream(), cat.getId());
+                // noteService.importNotes(file.getInputstream(),idC,idE, idAca,session.ordinal());
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "information","importation reussie "));
+                file = null;
+                reference = new String();
+            } catch (IOException | ServiceException ex) {
+                Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }     
     }
     
     

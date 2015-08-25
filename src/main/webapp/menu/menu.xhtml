@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:b="http://bootsfaces.net/ui"
@@ -12,23 +11,24 @@
         <title>Centre Informatique de Douala</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link href="../css/corps.css" rel="stylesheet" type="text/css" />
-        
         <link rel="icon" type="image/gif" href="../images/logo.gif" />
-      
     </h:head>
     <h:body>
-        <div id="entete">
-            <div id="logo">  
-            </div>
-
-            <div id="logo2">  
-            </div>  
-
-        </div>
+        <p:accordionPanel>
+            <p:tab title="Logo">
+                <div id="entete">
+                    <div id="logo">  
+                    </div>
+                    <div id="logo2">  
+                    </div>  
+                </div>
+            </p:tab>
+            <p:tab title="Deconnexion">
+                <p:commandButton value="Deconnexion" action="#{loginBean.logout()}" icon="ui-icon-disk"/>
+            </p:tab>
+        </p:accordionPanel>
         <div id="menu">  
             <h:form id="menubar">   
-
-
                 <p:menubar id="unique">
                     <p:menuitem value="Accueil" url="/faces/../index.xhtml" icon="ui-icon-home"/>
                     <p:submenu label="Données" icon="ui-icon-folder-collapsed">  

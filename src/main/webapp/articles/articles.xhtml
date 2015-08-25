@@ -52,7 +52,8 @@ and open the template in the editor.
                       
                       
                         <f:facet name="footer">  
-                            <p:commandButton value="Ajouter un article" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:articleTable" /> 
+                            <p:commandButton value="Ajouter un article" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:articleTable" />
+                            <p:commandButton value="Importer depuis  un fichier" onclick="PF('importer_dialog').show()" icon="ui-icon-disk" update=":list:articleTable" />
                         </f:facet> 
                     </p:dataTable> 
                 </h:form>
@@ -68,6 +69,9 @@ and open the template in the editor.
                             <p:inputText  id="idcon" value="#{donneesBean.article.conditionnement}" required="true"/>
                             <h:outputText value="P.U."/> 
                             <p:inputText  id="idprix" value="#{donneesBean.article.prixUnitaire}" required="true"/>
+                            <h:outputText value="Quantité"/> 
+                            <p:inputText  id="idqte" value="#{donneesBean.article.quantite}" required="true"/>
+                            
                             <h:outputText value="Nomenclature"/> 
                             <p:selectOneMenu id="en5M" value="#{donneesBean.reference}" required="true" style="width:100%">
                                 <f:selectItems value="#{donneesBean.categories}" />  
@@ -95,13 +99,15 @@ and open the template in the editor.
                    <h:form id ="saveform">
                         <h:panelGrid id="display" columns="2" >  
                             <h:outputText value="Réference"/> 
-                            <p:inputText  id="iden" value="#{donneesBean.article.reference}" required="true"/> 
+                            <p:inputText  id="iden" value="#{donneesBean.article.reference}" required="true" requiredMessage="La reférence est obligatoire"/> 
                             <h:outputText value="Désignation"/> 
                             <p:inputText  id="mot" value="#{donneesBean.article.designation}" required="true"/>
                             <h:outputText value="Conditionnement"/> 
                             <p:inputText  id="cond" value="#{donneesBean.article.conditionnement}" required="true"/>
                             <h:outputText value="Prix Unitaire"/> 
                             <p:inputText  id="pu" value="#{donneesBean.article.prixUnitaire}" required="true"/>
+                            <h:outputText value="Quantité"/> 
+                            <p:inputText  id="qtite" value="#{donneesBean.article.quantite}" required="true"/>
                             
                             <h:outputText value="Nomenclature"/> 
                             <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%">
@@ -111,6 +117,32 @@ and open the template in the editor.
                             
                             <f:facet name="footer"> <br/>  
                                 <p:commandButton value="Enregistrer" action="#{donneesBean.saveArticle()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:articleTable" />  
+                            </f:facet>
+                            <f:facet name="footer">  
+                                <p:commandButton value="Effacer" type="reset"/>  
+                            </f:facet>
+                        </h:panelGrid> 
+                    </h:form>
+               </p:dialog>
+            
+            <p:dialog id="import" header="Importer des articles" widgetVar="importer_dialog"  width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+                   <h:form id ="importform"  enctype="multipart/form-data">
+                        <h:panelGrid id="display" columns="2" >
+                             <h:outputText value="Nomenclature"/> 
+                            <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%">
+                                <f:selectItems value="#{donneesBean.categories}" />  
+                            </p:selectOneMenu>
+                            <h:outputText  value="Selectionner le fichier excel " />  
+                                <p:fileUpload required="true"  value="#{donneesBean.file}" mode="simple"
+                                              auto="true"  
+                                              sizeLimit="100000"   
+                                              allowTypes="/(\.|\/)(xslx|xsl)$/" class="syntaxe_content" update="feuille" process="@this" invalidFileMessage="fichier invalide" requiredMessage="chargez le fichier" > 
+                                    <!--                                    <p:ajax listener="" event="change" update="cities" process="@this"/>-->
+                                </p:fileUpload>
+                            
+                            
+                            <f:facet name="footer"> <br/>  
+                                <p:commandButton value="Importer" action="#{donneesBean.importArticle()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:articleTable" ajax="false"/>  
                             </f:facet>
                             <f:facet name="footer">  
                                 <p:commandButton value="Effacer" type="reset"/>  
