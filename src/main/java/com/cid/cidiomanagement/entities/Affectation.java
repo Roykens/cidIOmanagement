@@ -39,7 +39,8 @@ public class Affectation implements Serializable{
     @Min(0)
     private int prix;
     
-    @OneToOne
+    
+    @ManyToOne
     private Article article;
     
     @ManyToOne

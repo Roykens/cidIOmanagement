@@ -39,6 +39,9 @@
                     <p:column headerText="Objet" filterBy="#{bon.objet}" sortBy="#{bon.objet}">  
                         <h:outputText value="#{bon.objet}" />  
                     </p:column>
+                    <p:column headerText="Etat" filterBy="#{bon.etat}" sortBy="#{bon.etat}">  
+                        <h:outputText value="#{bon.etat}" />  
+                    </p:column>
 
                     <p:column headerText="Articles" >  
                         <p:commandButton  id="a" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
@@ -137,7 +140,7 @@
                     <p:inputText value="#{commandeBean.noFacture}"/>
                      <p:outputLabel for="popupor" value="Date Facture" />
                      <p:calendar id="popupor" value="#{commandeBean.dateFacture}" />
-                    <p:commandButton ajax="false" value="Imprimer l'ordre d'entrée"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.produireOrdreEntree()}">
+                    <p:commandButton ajax="false" value="Imprimer l'ordre d'entrée"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.produireOrdreEntree()}" update=":list:bonTable">
                     </p:commandButton>
                 </h:form>
                 <p:separator/>

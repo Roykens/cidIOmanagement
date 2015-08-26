@@ -49,8 +49,7 @@ public class Article implements Serializable{
     @ManyToOne
     private Categorie categorie;
     
-    @OneToOne(mappedBy = "article")
-    private Affectation affectation;
+  
 
     public int getVersion() {
         return version;
@@ -106,14 +105,6 @@ public class Article implements Serializable{
 
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
-    }
-
-    public Affectation getAffectation() {
-        return affectation;
-    }
-
-    public void setAffectation(Affectation affectation) {
-        this.affectation = affectation;
     }
 
     public Integer getQuantite() {

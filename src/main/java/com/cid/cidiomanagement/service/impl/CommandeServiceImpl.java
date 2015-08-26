@@ -1,11 +1,14 @@
 package com.cid.cidiomanagement.service.impl;
 
 import co.royken.convert.FrenchNumberToWords;
+import com.cid.cidiomanagement.dao.IArticleDao;
 import com.cid.cidiomanagement.dao.IBonCommandeDao;
 import com.cid.cidiomanagement.dao.ICommandeDao;
 import com.cid.cidiomanagement.dao.IPrestataireDao;
+import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonCommande;
 import com.cid.cidiomanagement.entities.Commande;
+import com.cid.cidiomanagement.entities.EtatType;
 import com.cid.cidiomanagement.entities.Prestataire;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.ServiceException;
@@ -15,7 +18,6 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -28,7 +30,6 @@ import com.itextpdf.text.pdf.PdfPTableEvent;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.royken.generic.dao.DataAccessException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -44,8 +45,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.text.WordUtils;
-import org.springframework.cglib.core.Local;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -58,6 +57,7 @@ public class CommandeServiceImpl implements ICommandeService {
     private ICommandeDao commandeDao;
     private IBonCommandeDao bonCommandeDao;
     private IPrestataireDao prestataireDao;
+    private IArticleDao articleDao;
 
     private final String tab = "    ";
 
@@ -85,11 +85,20 @@ public class CommandeServiceImpl implements ICommandeService {
         this.prestataireDao = prestataireDao;
     }
 
+    public IArticleDao getArticleDao() {
+        return articleDao;
+    }
+
+    public void setArticleDao(IArticleDao articleDao) {
+        this.articleDao = articleDao;
+    }
+
     @Override
     public BonCommande saveOrUpdateBon(BonCommande bonCommande) throws ServiceException {
 
         try {
             if (bonCommande.getId() == null) {
+                bonCommande.setEtat(EtatType.Encour);
                 return bonCommandeDao.create(bonCommande);
             } else {
                 return bonCommandeDao.update(bonCommande);
@@ -516,7 +525,7 @@ public class CommandeServiceImpl implements ICommandeService {
 
             products.addCell(cell1);
 
-            to = new Chunk((int)Math.floor((prixTotal + prixtva)) + "", bf10);
+            to = new Chunk((int) Math.floor((prixTotal + prixtva)) + "", bf10);
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -578,7 +587,7 @@ public class CommandeServiceImpl implements ICommandeService {
             Font bf12i = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
             Font bf10 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
-            Font bf1b = new Font(Font.FontFamily.TIMES_ROMAN,10,Font.BOLD);
+            Font bf1b = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
             Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
             Font fontBig = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
             Font fontBig2 = new Font(Font.FontFamily.TIMES_ROMAN, 14);
@@ -683,11 +692,11 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(exer);
             Calendar ca = Calendar.getInstance();
             ca.setTime(dateFacture);
-            String month = ca.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE );
-            month = WordUtils.capitalize(month) ;
+            String month = ca.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+            month = WordUtils.capitalize(month);
             int year = ca.get(Calendar.YEAR);
             int day = ca.get(Calendar.DATE);
-            Chunk seront = new Chunk("Seront portés en entrée, dans les écritures comptables du Chef de Poste Comptable de la comptabilité matières, les matières et objets ci-dessous désignés provenant de la Facture No "+noFacture + " du " +day + " "+month + " "+year, bf10);
+            Chunk seront = new Chunk("Seront portés en entrée, dans les écritures comptables du Chef de Poste Comptable de la comptabilité matières, les matières et objets ci-dessous désignés provenant de la Facture No " + noFacture + " du " + day + " " + month + " " + year, bf10);
             doc.add(seront);
 
             float relativewidth3[] = {1, 2, 7, 2, 3, 3, 4, 4, 3};
@@ -815,6 +824,15 @@ public class CommandeServiceImpl implements ICommandeService {
             table.addCell(cell);
 
             List<Commande> commandes = commandeDao.findByBon(bc);
+            if (bc.getEtat() == EtatType.Encour) {
+                for (Commande commande : commandes) {
+                    Article art = commande.getArticle();
+                    int qteI = art.getQuantite();
+                    int qteF = commande.getNombre();
+                    art.setQuantite(qteI + qteF);
+                    articleDao.update(art);
+                }
+            }
             Set<String> cat = new TreeSet<>();
             cat = getCategories(commandes);
             Map<String, List<Commande>> data = transform(commandes);
@@ -833,20 +851,26 @@ public class CommandeServiceImpl implements ICommandeService {
                 });
 
                 for (int i = 0; i < temp.size(); i++) {
+                    // int artQ = temp.get(i).getArticle().getQuantite();
+                    int nombrCommande = temp.get(i).getNombre();
+                    //Article art = new Article();
+                    //art = temp.get(i).getArticle();
+                    //art.setQuantite(artQ+nombrCommande);
+                    //articleDao.update(art);
                     table.addCell(createDotedValueCell(String.valueOf(index++), bf12));
                     table.addCell(createDotedValueCell(temp.get(i).getCategorie(), bf12));
                     table.addCell(createDotedValueCell(temp.get(i).getArticle().getDesignation(), bf12));
                     table.addCell(createDotedValueCell(temp.get(i).getArticle().getConditionnement(), bf12));
-                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getNombre()), bf12));
+                    table.addCell(createDotedValueCell(String.valueOf(nombrCommande), bf12));
                     table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getPrixArticle()), bf12));
-                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getNombre() * temp.get(i).getPrixArticle()), bf12));
+                    table.addCell(createDotedValueCell(String.valueOf(nombrCommande * temp.get(i).getPrixArticle()), bf12));
                     prixTemp += temp.get(i).getNombre() * temp.get(i).getPrixArticle();
                     if (i != temp.size() - 1) {
                         table.addCell(createDotedValueCell("", bf12));
                         table.addCell(createDotedValueCell("", bf12));
                     } else {
-                        
-                        table.addCell(createDotedValueCell(String.valueOf((int)Math.floor(prixTemp)), bf12));
+
+                        table.addCell(createDotedValueCell(String.valueOf((int) Math.floor(prixTemp)), bf12));
                         table.addCell(createDotedValueCell("", bf12));
                     }
                 }
@@ -858,13 +882,13 @@ public class CommandeServiceImpl implements ICommandeService {
             cell1.addElement(p);
             cell1.setColspan(6);
             table.addCell(cell1);
-            p = new Paragraph(String.valueOf((int)Math.floor(prixFinal)), fontEntete);
+            p = new Paragraph(String.valueOf((int) Math.floor(prixFinal)), fontEntete);
             cell1 = new PdfPCell();
             p.setAlignment(Element.ALIGN_CENTER);
             cell1.addElement(p);
             //cell1.setColspan(6);
             table.addCell(cell1);
-            p = new Paragraph(String.valueOf((int)Math.floor(prixFinal)), fontEntete);
+            p = new Paragraph(String.valueOf((int) Math.floor(prixFinal)), fontEntete);
             cell1 = new PdfPCell();
             p.setAlignment(Element.ALIGN_CENTER);
             cell1.addElement(p);
@@ -879,7 +903,7 @@ public class CommandeServiceImpl implements ICommandeService {
             String prixS = FrenchNumberToWords.convert(prix);
             Chunk arete = new Chunk("Arrêté le présent ordre d'entrée à ", bf1);
             String nomc = FrenchNumberToWords.convert(nombre);
-            Chunk art = new Chunk(nombre + " ("+nomc.toUpperCase() +")", bf1b);
+            Chunk art = new Chunk(nombre + " (" + nomc.toUpperCase() + ")", bf1b);
             Chunk article = new Chunk(" articles, évalués à la somme de: ", bf1);
             Chunk prixL = new Chunk(prixS.toUpperCase() + " FRANCS CFA", bf1b);
             p = new Paragraph();
@@ -889,18 +913,18 @@ public class CommandeServiceImpl implements ICommandeService {
             p.add(prixL);
             doc.add(p);
             doc.add(new Chunk("\n"));
-            
+
             float relativewidth4[] = {6, 1, 6};
             firstTable = new PdfPTable(relativewidth4);
             firstTable.setWidthPercentage(100);
             Calendar c = Calendar.getInstance();
-            String moi = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE );
-            moi = WordUtils.capitalize(moi) ;
+            String moi = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+            moi = WordUtils.capitalize(moi);
             int annee = c.get(Calendar.YEAR);
             int jour = c.get(Calendar.DATE);
-            numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facture No " +noFacture + " du " +day + " "+month + " "+year+"\n",bf1);
+            numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facture No " + noFacture + " du " + day + " " + month + " " + year + "\n", bf1);
             Chunk date = new Chunk(" A Douala , le ", fontEntete);
-            Chunk value = new Chunk(jour + " " + moi + " "+ annee +"\n", fontEntete);
+            Chunk value = new Chunk(jour + " " + moi + " " + annee + "\n", fontEntete);
             Chunk ordo = new Chunk("L'Odonnateur-Matières", fontEntete);
             p = new Paragraph();
             p.add(numer);
@@ -917,10 +941,10 @@ public class CommandeServiceImpl implements ICommandeService {
             cell1 = new PdfPCell();
             cell1.setBorderColor(BaseColor.WHITE);
             firstTable.addCell(cell1);
-            
-           // numer = new Chunk("\n");
+
+            // numer = new Chunk("\n");
             ordo = new Chunk("\n    DECLARATION DE PRISE EN CHARGE\n", fontEntete);
-            numer = new Chunk("     Le Chef de poste comptable de la comptabilité matières déclare avoir pris en charge et mis en approvisionnement les matières et objets dans le tableau ci-dessus.\n",bf1);
+            numer = new Chunk("     Le Chef de poste comptable de la comptabilité matières déclare avoir pris en charge et mis en approvisionnement les matières et objets dans le tableau ci-dessus.\n", bf1);
             Chunk chef = new Chunk("Le Chef de poste Comptable", fontEntete);
             p = new Paragraph();
             p.add(ordo);
@@ -937,7 +961,10 @@ public class CommandeServiceImpl implements ICommandeService {
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
             firstTable.addCell(cell1);
             doc.add(firstTable);
-
+            if (bc.getEtat() != EtatType.acheve) {
+                bc.setEtat(EtatType.acheve);
+                bonCommandeDao.update(bc);
+            }
         } catch (DocumentException | DataAccessException ex) {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1043,21 +1070,21 @@ public class CommandeServiceImpl implements ICommandeService {
             canvas.stroke();
         }
     }
-    
-    
+
     class DottedCell2 implements PdfPCellEvent {
-    @Override
-    public void cellLayout(PdfPCell cell, Rectangle position,
-        PdfContentByte[] canvases) {
-        PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
-        canvas.setLineDash(3f, 3f);
-        //canvas.moveTo(position.getLeft(), position.getTop());
-        canvas.lineTo(position.getRight(), position.getTop());
-        canvas.moveTo(position.getLeft(), position.getBottom());
-        canvas.lineTo(position.getRight(), position.getBottom());
-        canvas.stroke();
+
+        @Override
+        public void cellLayout(PdfPCell cell, Rectangle position,
+                PdfContentByte[] canvases) {
+            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+            canvas.setLineDash(3f, 3f);
+            //canvas.moveTo(position.getLeft(), position.getTop());
+            canvas.lineTo(position.getRight(), position.getTop());
+            canvas.moveTo(position.getLeft(), position.getBottom());
+            canvas.lineTo(position.getRight(), position.getBottom());
+            canvas.stroke();
+        }
     }
-}
 
     class DottedCells implements PdfPTableEvent {
 
