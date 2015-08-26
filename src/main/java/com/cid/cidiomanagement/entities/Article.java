@@ -135,7 +135,7 @@ public class Article implements Serializable{
 
     @Override
     public String toString() {
-        return "Article{" + "id=" + id + ", reference=" + reference + ", designation=" + designation + ", conditionnement=" + conditionnement + ", prixUnitaire=" + prixUnitaire + ", quantite=" + quantite + '}';
+        return designation;
     }
 
     @Override

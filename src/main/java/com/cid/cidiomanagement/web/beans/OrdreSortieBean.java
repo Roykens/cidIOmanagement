@@ -11,6 +11,7 @@ import com.cid.cidiomanagement.service.IOrdreSortieService;
 import com.cid.cidiomanagement.service.IPersonnelService;
 import com.cid.cidiomanagement.service.ServiceException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @ManagedBean
 @SessionScoped
-public class OrdreSortieBean  {
+public class OrdreSortieBean implements Serializable{
 
     @ManagedProperty(value = "#{IOrdreSortieService}")
     private IOrdreSortieService sortieService;
@@ -42,7 +43,7 @@ public class OrdreSortieBean  {
 
     private Affectation affectation = new Affectation();
 
-    private List<Affectation> affectations = new ArrayList<Affectation>();
+    private List<Affectation> affectations = new ArrayList<>();
 
     private BonSortie bonSortie = new BonSortie();
 
@@ -87,6 +88,9 @@ public class OrdreSortieBean  {
     }
 
     public BonSortie getBonSortie() {
+        if(bonSortie == null){
+            bonSortie = new BonSortie();
+        }
         return bonSortie;
     }
 
@@ -95,6 +99,9 @@ public class OrdreSortieBean  {
     }
 
     public OrdreSortie getOrdreSortie() {
+        if(ordreSortie == null){
+            ordreSortie = new OrdreSortie();
+        }
         return ordreSortie;
     }
 

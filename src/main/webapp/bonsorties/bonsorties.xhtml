@@ -65,7 +65,7 @@
                         </p:selectOneMenu>
                         
                         <h:outputText value="Obersvation/ No Serie : "/> 
-                        <p:inputText  id="ps" value="#{ordreSortieBean.affectation.observation}" required="true"/>
+                        <p:inputText  id="ps" value="#{ordreSortieBean.affectation.observation}" />
                         
                         <h:outputText value="Quantité Désirée : "/> 
                         <p:inputText  id="qt" value="#{ordreSortieBean.affectation.qteDemandee}" required="true"/>
@@ -75,11 +75,6 @@
                         
                         <h:outputText value="Prix unitaire : "/> 
                         <p:inputText  id="pa" value="#{ordreSortieBean.affectation.prix}" required="true"/>
-
-                        <h:outputText value="Demandant : "/>
-                        <p:selectOneMenu id="arti" value="#{ordreSortieBean.nomPersonnel}" required="true" style="width:100%" filter="true">
-                            <f:selectItems value="#{ordreSortieBean.personnels}" />  
-                        </p:selectOneMenu>
                         
                         <f:facet name="footer"> <br/>  
                             <p:commandButton value="Ajouter" action="#{ordreSortieBean.addAffectation()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":articles:articleTable" />  

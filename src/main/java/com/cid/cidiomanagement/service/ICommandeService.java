@@ -27,7 +27,7 @@ public interface ICommandeService {
     
     public void produireBonCommande(Long bonCommandeId, OutputStream stream) throws ServiceException;
     
-    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream) throws ServiceException;
+    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream, String noFacture, java.util.Date dateFacture) throws ServiceException;
     
       public void produceTrash(Long bonId, String objet ,OutputStream outputStream) throws ServiceException;
       

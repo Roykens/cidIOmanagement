@@ -33,6 +33,9 @@ public class BonCommande implements Serializable {
     private Date dateCommande;
 
     @Basic
+    private String objet;
+    
+    @Basic
     @Enumerated(EnumType.STRING)
     private EtatType etat;
 
@@ -78,6 +81,16 @@ public class BonCommande implements Serializable {
     public void setPrestataire(Prestataire prestataire) {
         this.prestataire = prestataire;
     }
+
+    public String getObjet() {
+        return objet;
+    }
+
+    public void setObjet(String objet) {
+        this.objet = objet;
+    }
+    
+    
 
     @Override
     public String toString() {

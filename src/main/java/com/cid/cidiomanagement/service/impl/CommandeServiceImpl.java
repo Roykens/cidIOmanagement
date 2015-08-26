@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -176,7 +177,7 @@ public class CommandeServiceImpl implements ICommandeService {
     }
 
     @Override
-    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream) throws ServiceException {
+    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream, String noFacture, Date dateFacture) throws ServiceException {
         try {
             BonCommande bc = bonCommandeDao.findById(bonCommandeId);
             Document doc = new Document();
@@ -184,7 +185,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.setPageSize(PageSize.A4);
             doc.open();
             Util.produceHeader(doc);
-            produceOrdreEntree(bc, doc);
+            produceOrdreEntree(bc, doc, noFacture, dateFacture);
             doc.close();
 
         } catch (DataAccessException | DocumentException ex) {
@@ -355,7 +356,7 @@ public class CommandeServiceImpl implements ICommandeService {
             underline2.setUnderline(0.1f, -2f);
             Paragraph p3 = new Paragraph(underline2);
             //p3.add(underline2);
-            p3.add(new Chunk(objet, bf12));
+            p3.add(new Chunk("toto", bf12));
             doc.add(p3);
             doc.add(new Chunk("\n"));
 
@@ -375,8 +376,8 @@ public class CommandeServiceImpl implements ICommandeService {
                 products.addCell(createBonDefaultFHeader(commande.getArticle().getReference(), bf10));
                 products.addCell(createBonDefaultFHeader(commande.getArticle().getDesignation(), bf10));
                 products.addCell(createBonDefaultFHeader(String.valueOf(commande.getNombre()), bf10));
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getPrixUnitaire() + "", bf10));
-                double prixTemp = commande.getNombre() * commande.getArticle().getPrixUnitaire();
+                products.addCell(createBonDefaultFHeader(commande.getPrixArticle() + "", bf10));
+                double prixTemp = commande.getNombre() * commande.getPrixArticle();
                 prixTotal += prixTemp;
                 products.addCell(createBonDefaultFHeader(prixTemp + "", bf10));
             }
@@ -571,7 +572,7 @@ public class CommandeServiceImpl implements ICommandeService {
         }
     }
 
-    private void produceOrdreEntree(BonCommande bc, Document doc) {
+    private void produceOrdreEntree(BonCommande bc, Document doc, String noFacture, Date dateFacture) {
         try {
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
             Font bf12i = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
@@ -680,7 +681,13 @@ public class CommandeServiceImpl implements ICommandeService {
             Paragraph exer = new Paragraph(stb.toString(), bf10);
             exer.setAlignment(Element.ALIGN_CENTER);
             doc.add(exer);
-            Chunk seront = new Chunk("Seront portés en entrée, dans les écritures comptables du Chef de Poste Comptable de la comptabilité matières, les matières et objets ci-dessous désignés provenant de (2) .............", bf10);
+            Calendar ca = Calendar.getInstance();
+            ca.setTime(dateFacture);
+            String month = ca.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE );
+            month = WordUtils.capitalize(month) ;
+            int year = ca.get(Calendar.YEAR);
+            int day = ca.get(Calendar.DATE);
+            Chunk seront = new Chunk("Seront portés en entrée, dans les écritures comptables du Chef de Poste Comptable de la comptabilité matières, les matières et objets ci-dessous désignés provenant de la Facture No "+noFacture + " du " +day + " "+month + " "+year, bf10);
             doc.add(seront);
 
             float relativewidth3[] = {1, 2, 7, 2, 3, 3, 4, 4, 3};
@@ -891,7 +898,7 @@ public class CommandeServiceImpl implements ICommandeService {
             moi = WordUtils.capitalize(moi) ;
             int annee = c.get(Calendar.YEAR);
             int jour = c.get(Calendar.DATE);
-            numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facute (No facture) du (Date facture)\n",bf1);
+            numer = new Chunk(" Le chef de poste comptable de la comptabilité matières prendra en charge les matièrs et objets désignés dans le tableau, dont j'ai vérifié la concordance avec la Facture No " +noFacture + " du " +day + " "+month + " "+year+"\n",bf1);
             Chunk date = new Chunk(" A Douala , le ", fontEntete);
             Chunk value = new Chunk(jour + " " + moi + " "+ annee +"\n", fontEntete);
             Chunk ordo = new Chunk("L'Odonnateur-Matières", fontEntete);

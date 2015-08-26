@@ -36,6 +36,10 @@
                         <h:outputText value="#{bon.prestataire}" />  
                     </p:column>
 
+                    <p:column headerText="Objet" filterBy="#{bon.objet}" sortBy="#{bon.objet}">  
+                        <h:outputText value="#{bon.objet}" />  
+                    </p:column>
+
                     <p:column headerText="Articles" >  
                         <p:commandButton  id="a" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
                             <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
@@ -100,7 +104,7 @@
                         <p:column headerText="Quantité" >
                             <h:outputText value="#{item.nombre}" />  
                         </p:column> 
-                        
+
                         <p:column headerText="Prix Unitaire" >
                             <h:outputText value="#{item.prixArticle}" />  
                         </p:column> 
@@ -126,10 +130,14 @@
                 <p:separator/>
                 <h:inputHidden value="#{commandeBean.bonCommande.id}"  />
             </p:dialog>
-            
-             <p:dialog modal="true" header="Confirmer l'impression" widgetVar="dlgOrdre" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
+
+            <p:dialog modal="true" header="Confirmer l'impression" widgetVar="dlgOrdre" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
                 <h:form id="formordre" enctype="multipart/form-data">
-                    <p:commandButton ajax="false" value="Imprimer l'ordre d'entrée"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.produireOrdreSortie()}">
+                    <h:outputText value="No Facture"/>
+                    <p:inputText value="#{commandeBean.noFacture}"/>
+                     <p:outputLabel for="popupor" value="Date Facture" />
+                     <p:calendar id="popupor" value="#{commandeBean.dateFacture}" />
+                    <p:commandButton ajax="false" value="Imprimer l'ordre d'entrée"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.produireOrdreEntree()}">
                     </p:commandButton>
                 </h:form>
                 <p:separator/>
@@ -142,6 +150,9 @@
             <p:dialog id="save" header="Ajouter un Bon de Commande" widgetVar="ajouter_dialog"   showEffect="clip" hideEffect="explode" modal="true"> 
                 <h:form id ="saveform">
                     <h:panelGrid id="display" columns="2" > 
+                        <h:outputText  value="Objet:" />
+                        <p:inputText value="#{commandeBean.bonCommande.objet}" required="true" requiredMessage="L'objet de la commande est obligatoire"/>
+
                         <p:outputLabel for="popup" value="Date:" />
                         <p:calendar id="popup" value="#{commandeBean.bonCommande.dateCommande}" />
                         <h:outputText value="Prestataire"/> 
@@ -157,6 +168,7 @@
                     </h:panelGrid> 
                 </h:form>
             </p:dialog>
+
 
         </div>
     </h:body>

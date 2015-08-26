@@ -44,6 +44,9 @@ public class PersonnelBean implements Serializable {
     }
     
     public Personnel getPersonne() {
+        if(personne == null){
+            personne = new Personnel();
+        }
         return personne;
     }
     
@@ -52,6 +55,9 @@ public class PersonnelBean implements Serializable {
     }
     
     public Service getService() {
+        if(service == null){
+            service = new Service();
+        }
         return service;
     }
     

@@ -3,6 +3,7 @@ package com.cid.cidiomanagement.web.beans;
 import com.cid.cidiomanagement.entities.Prestataire;
 import com.cid.cidiomanagement.service.IPrestataireService;
 import com.cid.cidiomanagement.service.ServiceException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,14 +12,15 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author royken
  */
 @ManagedBean
-@RequestScoped
-public class PrestataireBean {
+@SessionScoped
+public class PrestataireBean implements Serializable{
 
     @ManagedProperty("#{IPrestataireService}")
     private IPrestataireService prestataireService;
@@ -43,6 +45,9 @@ public class PrestataireBean {
     }
 
     public Prestataire getPrestataire() {
+        if(prestataire == null){
+            prestataire = new Prestataire();
+        }
         return prestataire;
     }
 

@@ -4,7 +4,6 @@ import com.cid.cidiomanagement.entities.Utilisateur;
 import com.cid.cidiomanagement.service.IUtilisateurService;
 import com.cid.cidiomanagement.service.ServiceException;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,13 +13,14 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class UtilisateurBean implements Serializable {
 
     private List<Utilisateur> utilisateurs;

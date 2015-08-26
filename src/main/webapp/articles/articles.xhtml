@@ -73,7 +73,7 @@ and open the template in the editor.
                             <p:inputText  id="idqte" value="#{donneesBean.article.quantite}" required="true"/>
                             
                             <h:outputText value="Nomenclature"/> 
-                            <p:selectOneMenu id="en5M" value="#{donneesBean.reference}" required="true" style="width:100%">
+                            <p:selectOneMenu id="en5M" value="#{donneesBean.reference}" required="true" style="width:100%" filter="true">
                                 <f:selectItems value="#{donneesBean.categories}" />  
                             </p:selectOneMenu>
                             
@@ -110,7 +110,7 @@ and open the template in the editor.
                             <p:inputText  id="qtite" value="#{donneesBean.article.quantite}" required="true"/>
                             
                             <h:outputText value="Nomenclature"/> 
-                            <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%">
+                            <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%" filter="true" requiredMessage="La nomenclature sommaire est obligatoire">
                                 <f:selectItems value="#{donneesBean.categories}" />  
                             </p:selectOneMenu>
                             

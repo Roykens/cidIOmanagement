@@ -8,17 +8,19 @@ import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.IPrestataireService;
 import com.cid.cidiomanagement.service.ServiceException;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @ManagedBean
 @SessionScoped
-public class CommandeBean {
+public class CommandeBean implements Serializable {
 
     @ManagedProperty("#{ICommandeService}")
     private ICommandeService commandeService;
@@ -38,20 +40,30 @@ public class CommandeBean {
     @ManagedProperty("#{IPrestataireService}")
     private IPrestataireService prestataireService;
     private Commande commande = new Commande();
-    private BonCommande bonCommande = new BonCommande();
+    private BonCommande bonCommande;
     private Article article = new Article();
     private Prestataire prestataire = new Prestataire();
     private String nomPrestataire;
     private String nomArticle;
-    private List<Commande> commandes = new ArrayList<Commande>();
-    private List<BonCommande> bonCommandes = new ArrayList<BonCommande>();
-    private List<Article> articles = new ArrayList<Article>();
-    private List<Prestataire> prestataires = new ArrayList<Prestataire>();
+    private List<Commande> commandes = new ArrayList<>();
+    private List<BonCommande> bonCommandes = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
+    private List<Prestataire> prestataires = new ArrayList<>();
+    String noFacture = new String();
+    Date dateFacture = new Date();
 
     /**
      * Creates a new instance of CommandeBean
      */
     public CommandeBean() {
+        bonCommande = new BonCommande();
+       
+    }
+
+    @PostConstruct
+    public void init() {
+        //users = new Iuser();
+        bonCommande = new BonCommande();
     }
 
     public ICommandeService getCommandeService() {
@@ -87,6 +99,10 @@ public class CommandeBean {
     }
 
     public BonCommande getBonCommande() {
+         if(bonCommande == null){
+            bonCommande = new BonCommande();
+                   // (BonCommande)super.getInstance(BonCommande.class);
+        }
         return bonCommande;
     }
 
@@ -132,6 +148,22 @@ public class CommandeBean {
 
     public void setCommandes(List<Commande> commandes) {
         this.commandes = commandes;
+    }
+
+    public String getNoFacture() {
+        return noFacture;
+    }
+
+    public void setNoFacture(String noFacture) {
+        this.noFacture = noFacture;
+    }
+
+    public Date getDateFacture() {
+        return dateFacture;
+    }
+
+    public void setDateFacture(Date dateFacture) {
+        this.dateFacture = dateFacture;
     }
 
     public List<BonCommande> getBonCommandes() {
@@ -201,8 +233,6 @@ public class CommandeBean {
 
     public void finirBon() {
 
-
-
         for (Commande commande1 : commandes) {
             try {
                 commande1.setBonCommande(bonCommande);
@@ -212,13 +242,17 @@ public class CommandeBean {
             }
         }
         commandes = new ArrayList<>();
+        bonCommande = new BonCommande();
     }
 
     public String saveBonCommande() {
         try {
+            System.out.println("Le bon de commande : ");
+            System.out.println(bonCommande);
             Prestataire prestataire1 = prestataireService.findByNom(nomPrestataire);
             System.out.println(prestataire1);
             bonCommande.setPrestataire(prestataire1);
+            System.out.println(bonCommande);
             commandeService.saveOrUpdateBon(bonCommande);
             bonCommande = new BonCommande();
         } catch (ServiceException ex) {
@@ -239,7 +273,7 @@ public class CommandeBean {
                 HttpServletResponse hsr = (HttpServletResponse) response;
                 hsr.setContentType("application/pdf");
                 hsr.setHeader("Content-Disposition", "attachment; filename=pv.pdf");
-                commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels", ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
 
                 context.responseComplete();
             } catch (IOException ex) {
@@ -247,10 +281,9 @@ public class CommandeBean {
             }
         }
 
-
     }
-    
-     public void produireOrdreSortie(){
+
+    public void produireOrdreEntree() {
         System.out.println("Je suis ici \n\n\n");
         System.out.println(bonCommande);
         FacesContext context = FacesContext.getCurrentInstance();
@@ -261,14 +294,14 @@ public class CommandeBean {
                 HttpServletResponse hsr = (HttpServletResponse) response;
                 hsr.setContentType("application/pdf");
                 hsr.setHeader("Content-Disposition", "attachment; filename=ordreEntree.pdf");
-                
-               // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
-                commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+
+                // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream(), noFacture, dateFacture);
                 context.responseComplete();
             } catch (IOException | ServiceException ex) {
                 Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    
+
 }
