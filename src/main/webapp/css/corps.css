@@ -1,5 +1,5 @@
 html {
-background-image:linear-gradient(white, black);
+    background-image:linear-gradient(white, black);
 }
 body{
     height: 700px;
@@ -8,6 +8,16 @@ body{
     /*background-color: white;*/
     background-image:linear-gradient(white , green);
 }
+
+#connexionB{
+    padding-top: 20%;
+}
+
+#tabClass{
+    background-image: url("../images/login.png") !important;
+    background-repeat:no-repeat !important;
+}
+
 
 #logo2{
     background-image: url(../images/ho_slogan.png);
@@ -28,18 +38,18 @@ body{
 
 #logo,#logo2{
     display: inline-block;
-    
+
 }
 #menu{
     margin-left: 100px;
     margin-right: 100px;
     height: 45px;
     /*padding: 102px;*/
-   /* background-color:lightgrey;*/
-    
+    /* background-color:lightgrey;*/
+
     margin-top: 10px;
 }
-#entete{
+/*#entete{
     height: 96px;
     width: auto;
     background-color: darkgray;
@@ -47,6 +57,16 @@ body{
     margin-top: 10px;
     margin-left: 100px;
     margin-right: 100px;
+}*/
+
+#entete{
+    height: 150px;
+    background-image: url(../images/maBani-rea.png);
+    width: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 65px;
+    margin-right: 65px;
 }
 
 #conten{
@@ -75,8 +95,8 @@ a img{
     margin-left: 10px;
 }
 a img:hover{
-  background-color: red; 
-  padding-left: 2px;
+    background-color: red; 
+    padding-left: 2px;
 }
 a {
     outline: 0;

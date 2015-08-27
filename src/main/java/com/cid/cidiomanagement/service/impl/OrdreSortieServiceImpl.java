@@ -1,6 +1,7 @@
 package com.cid.cidiomanagement.service.impl;
 
 import com.cid.cidiomanagement.dao.IAffectationDao;
+import com.cid.cidiomanagement.dao.IArticleDao;
 import com.cid.cidiomanagement.dao.IBonSortieDao;
 import com.cid.cidiomanagement.dao.IOrdreSortieDao;
 import com.cid.cidiomanagement.entities.Affectation;
@@ -40,6 +41,18 @@ public class OrdreSortieServiceImpl implements IOrdreSortieService {
     private IBonSortieDao bonSortieDao;
 
     private IOrdreSortieDao ordreSortieDao;
+    
+    private IArticleDao articleDao;
+
+    public IArticleDao getArticleDao() {
+        return articleDao;
+    }
+
+    public void setArticleDao(IArticleDao articleDao) {
+        this.articleDao = articleDao;
+    }
+    
+    
 
     public IAffectationDao getAffectationDao() {
         return affectationDao;
@@ -123,6 +136,11 @@ public class OrdreSortieServiceImpl implements IOrdreSortieService {
             Logger.getLogger(OrdreSortieServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Collections.EMPTY_LIST;
+    }
+    
+     @Override
+    public List<Affectation> findAllAffectationByOrdre(Long idOrdre) throws ServiceException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -411,5 +429,7 @@ public class OrdreSortieServiceImpl implements IOrdreSortieService {
             Logger.getLogger(OrdreSortieServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+   
 
 }

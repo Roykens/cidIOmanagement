@@ -1,14 +1,11 @@
 package com.cid.cidiomanagement;
 
-import com.cid.cidiomanagement.entities.Categorie;
 import com.cid.cidiomanagement.entities.Commande;
-import com.cid.cidiomanagement.entities.Service;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.IPersonnelService;
 import com.cid.cidiomanagement.service.IUtilisateurService;
 import com.cid.cidiomanagement.service.ServiceException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -79,7 +79,7 @@
 
 
                         <h:outputText value="Articles"/>
-                        <p:selectOneMenu id="art" value="#{commandeBean.nomArticle}" required="true" style="width:100%">
+                        <p:selectOneMenu id="art" value="#{commandeBean.nomArticle}" required="true" style="width:100%" filter="true" requiredMessage="L'article est obligatoire">
                             <f:selectItems value="#{commandeBean.articles}" />  
                         </p:selectOneMenu>
                         <h:outputText value="Quantité"/> 

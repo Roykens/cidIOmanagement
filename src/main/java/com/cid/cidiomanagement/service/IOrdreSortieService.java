@@ -22,6 +22,8 @@ public interface IOrdreSortieService {
     
     public List<Affectation> findAllByBon(Long idBon) throws ServiceException;
     
+    public List<Affectation> findAllAffectationByOrdre(Long idOrdre) throws ServiceException;
+    
     
     
     public BonSortie saveOrUpdateBonSortie(BonSortie bonSortie) throws ServiceException;

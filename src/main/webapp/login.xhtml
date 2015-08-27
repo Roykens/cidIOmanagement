@@ -8,7 +8,7 @@
         <title>Gestion des Categories </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link href="./css/corps.css" rel="stylesheet" type="text/css" />
-       
+
         <link rel="icon" type="image/gif" href="./images/logo.gif" />
     </h:head>
     <h:body>
@@ -16,22 +16,28 @@
         <div id="connexionB">
             <center>
                 <f:view>
-                    <p:panel header="Connexion" style="width: 500px;">
-                        <h:form >            
-                            <p:growl id="growl"  showDetail="true"  />
-                            <h:panelGrid columns="2" cellpadding="5">
-                                <h:outputLabel for="username" value="Username:" />
-                                <p:inputText id="username" value="#{loginBean.userName}" required="true" label="username" />
+                    <p:panel header="Connexion" style="width: 500px;" id="tabClass">
+                        <f:facet name="title">
+                            <p:graphicImage value="./images/icon.png"/>
+                            <h:outputText value="Connexion"/>
+                        </f:facet>
 
-                                <h:outputLabel for="password" value="Password:" />
-                                <p:password id="password" value="#{loginBean.password}" required="true" label="password" feedback="false"/>
+                        
+                            <h:form >            
+                                <p:growl id="growl"  showDetail="true"  />
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputLabel for="username" value="Username:" />
+                                    <p:inputText id="username" value="#{loginBean.userName}" required="true" label="username" />
 
-                                <f:facet name="footer">
-                                    <p:commandButton value="Login" update="growl" action="#{loginBean.login()}"/>
-                                </f:facet>  
-                            </h:panelGrid>
+                                    <h:outputLabel for="password" value="Password:" />
+                                    <p:password id="password" value="#{loginBean.password}" required="true" label="password" feedback="false"/>
 
-                        </h:form>
+                                    <f:facet name="footer">
+                                        <p:commandButton value="Login" update="growl" action="#{loginBean.login()}"/>
+                                    </f:facet>  
+                                </h:panelGrid>
+
+                            </h:form>
                     </p:panel>
 
 
