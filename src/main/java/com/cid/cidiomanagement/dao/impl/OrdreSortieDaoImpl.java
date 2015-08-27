@@ -22,6 +22,18 @@ import javax.persistence.criteria.Root;
 public class OrdreSortieDaoImpl extends GenericDao<OrdreSortie, Long> implements IOrdreSortieDao{
 
     @Override
+    public List<OrdreSortie> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<OrdreSortie> cq = cb.createQuery(OrdreSortie.class);
+        Root<OrdreSortie> orRoot = cq.from(OrdreSortie.class);
+        cq.select(orRoot);
+        cq.orderBy(cb.desc(orRoot.get(OrdreSortie_.dateOrdreSortie)));
+        return getManager().createQuery(cq).getResultList(); 
+    }
+
+    
+    
+    @Override
     public OrdreSortie findByDateString(String date) throws DataAccessException {
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<OrdreSortie> cq = cb.createQuery(OrdreSortie.class);

@@ -12,6 +12,8 @@ import java.util.List;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 public interface IBonCommandeDao extends IGenericDao<BonCommande, Long>{
+
+   
     
     
 }

@@ -18,6 +18,18 @@ import javax.persistence.criteria.Root;
 public class BonSortieDaoImpl extends GenericDao<BonSortie, Long> implements IBonSortieDao{
 
     @Override
+    public List<BonSortie> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<BonSortie> cq = cb.createQuery(BonSortie.class);
+        Root<BonSortie> bsRoot = cq.from(BonSortie.class);
+        cq.select(bsRoot);
+        cq.orderBy(cb.desc(bsRoot.get(BonSortie_.datesortie)));
+        return getManager().createQuery(cq).getResultList();
+    }
+
+    
+    
+    @Override
     public List<BonSortie> findByOrdreSortie(OrdreSortie ordreSortie) throws DataAccessException {
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<BonSortie> cq = cb.createQuery(BonSortie.class);
