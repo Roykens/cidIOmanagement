@@ -22,7 +22,7 @@ public class BonSortieDaoImpl extends GenericDao<BonSortie, Long> implements IBo
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<BonSortie> cq = cb.createQuery(BonSortie.class);
         Root<BonSortie> bsRoot = cq.from(BonSortie.class);
-        cq.select(bsRoot);
+        cq.select(bsRoot).where(cb.equal(bsRoot.get(BonSortie_.active), true));
         cq.orderBy(cb.desc(bsRoot.get(BonSortie_.datesortie)));
         return getManager().createQuery(cq).getResultList();
     }
@@ -34,7 +34,7 @@ public class BonSortieDaoImpl extends GenericDao<BonSortie, Long> implements IBo
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<BonSortie> cq = cb.createQuery(BonSortie.class);
         Root<BonSortie> bonRoot = cq.from(BonSortie.class);
-        cq.where(cb.equal(bonRoot.get(BonSortie_.ordeSortie), ordreSortie));
+        cq.where(cb.and(cb.equal(bonRoot.get(BonSortie_.ordeSortie), ordreSortie),cb.equal(bonRoot.get(BonSortie_.active), true)));
         return getManager().createQuery(cq).getResultList();
     }
 
@@ -42,5 +42,7 @@ public class BonSortieDaoImpl extends GenericDao<BonSortie, Long> implements IBo
     public List<BonSortie> findByMonthAndYear(int month, int year) throws DataAccessException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
     
 }

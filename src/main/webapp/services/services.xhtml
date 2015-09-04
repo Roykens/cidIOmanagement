@@ -50,7 +50,8 @@
                             <h:outputText value="Code"/> 
                             <p:inputText  id="entree10" value="#{personnelBean.service.code}"/>
                            
-                            <h:inputHidden  id="entree14" value="#{personnelBean.service.id}"/> 
+                            <h:inputHidden  id="entree14" value="#{personnelBean.service.id}"/>
+                            <h:inputHidden   value="#{personnelBean.service.version}"/>
 
                             <f:facet name="footer"> <br/> 
                                 <p:commandButton value="Modifier" action="#{personnelBean.updateService()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:serviceTable" />  
@@ -65,6 +66,7 @@
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
                     <h:form id="supform">
                         <h:inputHidden  id="entree11" value="#{personnelBean.service.id}"/>
+                        <h:inputHidden   value="#{personnelBean.service.version}"/>
                         <p:commandButton value="Yes" action="#{personnelBean.deleteService()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:serviceTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>

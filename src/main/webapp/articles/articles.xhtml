@@ -80,7 +80,8 @@ and open the template in the editor.
                                 <f:selectItems value="#{donneesBean.categories}" />  
                             </p:selectOneMenu>
                             
-                            <h:inputHidden  id="entree10" value="#{donneesBean.article.id}"/> 
+                            <h:inputHidden  id="entree10" value="#{donneesBean.article.id}"/>
+                            <h:inputHidden  id="entree11v" value="#{donneesBean.article.version}"/>
                             <f:facet name="footer"> <br/> 
                                 <p:commandButton value="Modifier" action="#{donneesBean.updateArticle()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:articleTable" />  
                             </f:facet>
@@ -94,6 +95,7 @@ and open the template in the editor.
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert">
                     <h:form id="supform">
                         <h:inputHidden  id="entree11" value="#{donneesBean.article.id}"/>
+                        <h:inputHidden  id="entree10" value="#{donneesBean.article.version}"/>
                         <p:commandButton value="Yes" action="#{donneesBean.deleteArticle()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:articleTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>
@@ -128,11 +130,11 @@ and open the template in the editor.
                     </h:form>
                </p:dialog>
             
-            <p:dialog id="import" header="Importer des articles" widgetVar="importer_dialog"  width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+            <p:dialog id="import" header="Importer des articles" widgetVar="importer_dialog"  width="500" showEffect="clip" hideEffect="explode" modal="true"> 
                    <h:form id ="importform"  enctype="multipart/form-data">
                         <h:panelGrid id="display" columns="2" >
                              <h:outputText value="Nomenclature"/> 
-                            <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%">
+                             <p:selectOneMenu id="en5" value="#{donneesBean.reference}" required="true" style="width:100%" filter="true">
                                 <f:selectItems value="#{donneesBean.categories}" />  
                             </p:selectOneMenu>
                             <h:outputText  value="Selectionner le fichier excel " />  

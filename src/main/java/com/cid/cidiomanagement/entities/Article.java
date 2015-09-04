@@ -49,6 +49,9 @@ public class Article implements Serializable{
     @ManyToOne
     private Categorie categorie;
     
+    @Basic
+    private boolean active = true;
+    
   
 
     public int getVersion() {
@@ -114,6 +117,14 @@ public class Article implements Serializable{
     public void setQuantite(Integer quantite) {
         this.quantite = quantite;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
     
     
 
@@ -169,10 +180,7 @@ public class Article implements Serializable{
         if (!Objects.equals(this.prixUnitaire, other.prixUnitaire)) {
             return false;
         }
-        if (!Objects.equals(this.quantite, other.quantite)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.quantite, other.quantite);
     }
     
     

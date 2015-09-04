@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -51,6 +52,8 @@ public class CommandeBean implements Serializable {
     private List<Prestataire> prestataires = new ArrayList<>();
     String noFacture = new String();
     Date dateFacture = new Date();
+    int noOrdreEntree;
+    int noChapitre;
 
     /**
      * Creates a new instance of CommandeBean
@@ -254,6 +257,7 @@ public class CommandeBean implements Serializable {
             bonCommande.setPrestataire(prestataire1);
             System.out.println(bonCommande);
             commandeService.saveOrUpdateBon(bonCommande);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", bonCommande.getObjet() + " a été enregistré "));
             bonCommande = new BonCommande();
         } catch (ServiceException ex) {
             Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -296,12 +300,30 @@ public class CommandeBean implements Serializable {
                 hsr.setHeader("Content-Disposition", "attachment; filename=ordreEntree.pdf");
 
                 // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
-                commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream(), noFacture, dateFacture);
+                commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream(), noFacture, dateFacture, noOrdreEntree, noChapitre);
                 context.responseComplete();
             } catch (IOException | ServiceException ex) {
                 Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+
+    public int getNoOrdreEntree() {
+        return noOrdreEntree;
+    }
+
+    public void setNoOrdreEntree(int noOrdreEntree) {
+        this.noOrdreEntree = noOrdreEntree;
+    }
+
+    public int getNoChapitre() {
+        return noChapitre;
+    }
+
+    public void setNoChapitre(int noChapitre) {
+        this.noChapitre = noChapitre;
+    }
+    
+    
 
 }

@@ -59,6 +59,12 @@ public class OrdreSortieBean implements Serializable{
 
     private Date dateOrdre;
     
+    private String objet;
+    
+    private int noChapitre;
+    
+    private int noOrdre;
+    
     private String dateO;
 
     private String nomArticle;
@@ -253,7 +259,25 @@ public class OrdreSortieBean implements Serializable{
 
     public String updateOrdre() {
         try {
-            sortieService.saveOrUpdateBonSortie(bonSortie);
+            sortieService.saveOrUpdateOrdre(ordreSortie);
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
+    
+    public String deleteOrdre() {
+        try {
+            sortieService.deletOrdre(ordreSortie.getId());
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "succes";
+    }
+    
+    public String deleteBon() {
+        try {
+            sortieService.deletOrdre(bonSortie.getId());
         } catch (ServiceException ex) {
             Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -326,6 +350,54 @@ public class OrdreSortieBean implements Serializable{
         }
     }
     
+   public void produceOrdreSortie(){
+        System.out.println("Je suis ici \n\n\n");
+        System.out.println(bonSortie);
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        Object response = context.getExternalContext().getResponse();
+        if (response instanceof HttpServletResponse) {
+            try {
+                HttpServletResponse hsr = (HttpServletResponse) response;
+                hsr.setContentType("application/pdf");
+                hsr.setHeader("Content-Disposition", "attachment; filename=pv.pdf");
+                
+               // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+               // sortieService.imprimerBsp(bonSortie.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                sortieService.imprimerOrdreSortie(ordreSortie.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream(), dateOrdre, noChapitre, noOrdre, objet);
+                context.responseComplete();
+            } catch (IOException ex) {
+                Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ServiceException ex) {
+                Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public String getObjet() {
+        return objet;
+    }
+
+    public void setObjet(String objet) {
+        this.objet = objet;
+    }
+
+    public int getNoChapitre() {
+        return noChapitre;
+    }
+
+    public void setNoChapitre(int noChapitre) {
+        this.noChapitre = noChapitre;
+    }
+
+    public int getNoOrdre() {
+        return noOrdre;
+    }
+
+    public void setNoOrdre(int noOrdre) {
+        this.noOrdre = noOrdre;
+    }
+   
    
 
 }

@@ -84,7 +84,13 @@ public class DonneeServiceImpl implements IDonneeService {
         try {
             Categorie categorie = categorieDao.findById(id);
             if (categorie != null) {
-                categorieDao.delete(categorie);
+                categorie.setActive(false);
+                categorieDao.update(categorie);
+                List<Article> articles = articleDao.findByCategorie(categorie);
+                for (Article article : articles) {
+                    article.setActive(false);
+                    articleDao.update(article);
+                }
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(DonneeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,7 +162,8 @@ public class DonneeServiceImpl implements IDonneeService {
         try {
             Article article = articleDao.findById(id);
             if (article != null) {
-                articleDao.delete(article);
+                article.setActive(false);
+                articleDao.update(article);
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(DonneeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

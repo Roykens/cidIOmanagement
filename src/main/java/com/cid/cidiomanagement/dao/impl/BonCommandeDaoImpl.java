@@ -25,8 +25,7 @@ public class BonCommandeDaoImpl extends GenericDao<BonCommande, Long> implements
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<BonCommande> cq = cb.createQuery(BonCommande.class);
         Root<BonCommande> bcRoot = cq.from(BonCommande.class);
-        cq.select(bcRoot);
-        cq.orderBy(cb.desc(bcRoot.get(BonCommande_.dateCommande)));
+        cq.select(bcRoot).where(cb.equal(bcRoot.get(BonCommande_.active), true)).orderBy(cb.desc(bcRoot.get(BonCommande_.dateCommande)));
         return getManager().createQuery(cq).getResultList();
 //        return super.findAll(); //To change body of generated methods, choose Tools | Templates.
     }

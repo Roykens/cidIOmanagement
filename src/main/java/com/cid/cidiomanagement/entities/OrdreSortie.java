@@ -52,6 +52,9 @@ public class OrdreSortie implements Serializable {
     @Enumerated(EnumType.STRING)
     private EtatType etatType;
     
+    @Basic
+    private boolean active = true;
+    
     public OrdreSortie() {
         // df = new SimpleDateFormat("MM-yyyy");
          df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.FRANCE);
@@ -106,10 +109,15 @@ public class OrdreSortie implements Serializable {
     public void setDateString(String dateString) {
         this.dateString = dateString;
     }
-    
-    
-    
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
     @Override
     public String toString() {
         return dateString;

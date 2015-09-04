@@ -45,6 +45,9 @@ public class Prestataire implements Serializable{
     
     @OneToMany(mappedBy = "prestataire", cascade = CascadeType.ALL)
     private List<BonCommande> bonCommandes;
+    
+    @Basic
+    private boolean active = true;
 
     public int getVersion() {
         return version;
@@ -101,6 +104,24 @@ public class Prestataire implements Serializable{
     public void setAir(Double air) {
         this.air = air;
     }
+
+    public List<BonCommande> getBonCommandes() {
+        return bonCommandes;
+    }
+
+    public void setBonCommandes(List<BonCommande> bonCommandes) {
+        this.bonCommandes = bonCommandes;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
+    
 
     @Override
     public String toString() {

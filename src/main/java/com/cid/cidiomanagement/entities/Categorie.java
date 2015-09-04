@@ -38,6 +38,9 @@ public class Categorie implements Serializable{
     
     @OneToMany(mappedBy = "categorie", cascade = CascadeType.ALL)
    private List<Article> articles;
+    
+     @Basic
+    private boolean active = true;
 
     public int getVersion() {
         return version;
@@ -71,7 +74,7 @@ public class Categorie implements Serializable{
         this.nom = nom;
     }
     
-    
+   
 
     public List<Article> getArticles() {
         return articles;
@@ -81,6 +84,16 @@ public class Categorie implements Serializable{
         this.articles = articles;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    
+    
     @Override
     public String toString() {
         return nomenclatureSommaire;

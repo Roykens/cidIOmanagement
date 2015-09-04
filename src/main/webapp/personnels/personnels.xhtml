@@ -41,7 +41,7 @@ and open the template in the editor.
                             <h:outputText value="#{personne.service.nom}" />  
                         </p:column>                       
                         <f:facet name="footer">  
-                            <p:commandButton value="Ajouter un personne" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:personneTable" /> 
+                            <p:commandButton value="Ajouter une personne" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:personneTable" /> 
                         </f:facet> 
                     </p:dataTable> 
                 </h:form>
@@ -57,6 +57,7 @@ and open the template in the editor.
                             </p:selectOneMenu>
                             
                             <h:inputHidden  id="entree10" value="#{personnelBean.personne.id}"/> 
+                            <h:inputHidden  id="entree11v" value="#{personnelBean.personne.version}"/> 
                             <f:facet name="footer"> <br/> 
                                 <p:commandButton value="Modifier" action="#{personnelBean.updatePersonnel()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:personneTable" />  
                             </f:facet>
@@ -70,6 +71,7 @@ and open the template in the editor.
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert">
                     <h:form id="supform">
                         <h:inputHidden  id="entree11" value="#{personnelBean.personne.id}"/>
+                        <h:inputHidden  value="#{personnelBean.personne.version}"/>
                         <p:commandButton value="Yes" action="#{personnelBean.deletePersonnel()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:personneTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>

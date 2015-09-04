@@ -42,6 +42,9 @@ public class BonCommande implements Serializable {
 
     @ManyToOne
     private Prestataire prestataire;
+    
+    @Basic
+    private boolean active = true;
 
     public int getVersion() {
         return version;
@@ -89,6 +92,14 @@ public class BonCommande implements Serializable {
 
     public void setObjet(String objet) {
         this.objet = objet;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
     

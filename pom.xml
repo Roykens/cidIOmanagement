@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.1.1</version>
+            <version>5.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -209,7 +209,7 @@
             <artifactId>prettyfaces-jsf2</artifactId>
             <version>3.3.3</version>
         </dependency>-->
-        <dependency>
+<!--        <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-servlet</artifactId>
             <version>2.0.12.Final</version>
@@ -218,7 +218,7 @@
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-config-prettyfaces</artifactId>
             <version>2.0.12.Final</version>
-        </dependency>
+        </dependency>-->
 
         
     </dependencies>

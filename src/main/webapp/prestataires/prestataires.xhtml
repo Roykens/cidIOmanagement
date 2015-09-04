@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -51,7 +47,7 @@ and open the template in the editor.
                         </p:column>
                         
                         <f:facet name="footer">  
-                            <p:commandButton value="Ajouter une prestataire" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:prestataireTable" /> 
+                            <p:commandButton value="Ajouter un prestataire" onclick="PF('ajouter_dialog').show()" icon="ui-icon-disk" update=":list:prestataireTable" /> 
                         </f:facet> 
                     </p:dataTable> 
                 </h:form>
@@ -69,7 +65,8 @@ and open the template in the editor.
                             <p:inputText  id="entree12" value="#{prestataireBean.prestataire.adresse}"/>
                             <h:outputText value="Telephone"/> 
                             <p:inputText  id="entree13" value="#{prestataireBean.prestataire.telephone}"/>
-                            <h:inputHidden  id="entree14" value="#{prestataireBean.prestataire.id}"/> 
+                            <h:inputHidden  id="entree14" value="#{prestataireBean.prestataire.id}"/>
+                            <h:inputHidden   value="#{prestataireBean.prestataire.version}"/>
 
                             <f:facet name="footer"> <br/> 
                                 <p:commandButton value="Modifier" action="#{prestataireBean.updatePrestataire()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:prestataireTable" />  
@@ -84,6 +81,7 @@ and open the template in the editor.
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
                     <h:form id="supform">
                         <h:inputHidden  id="entree11" value="#{prestataireBean.prestataire.id}"/>
+                        <h:inputHidden   value="#{prestataireBean.prestataire.version}"/>
                         <p:commandButton value="Yes" action="#{prestataireBean.deletePrestataire()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:prestataireTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>

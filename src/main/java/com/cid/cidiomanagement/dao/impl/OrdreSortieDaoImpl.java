@@ -26,8 +26,7 @@ public class OrdreSortieDaoImpl extends GenericDao<OrdreSortie, Long> implements
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<OrdreSortie> cq = cb.createQuery(OrdreSortie.class);
         Root<OrdreSortie> orRoot = cq.from(OrdreSortie.class);
-        cq.select(orRoot);
-        cq.orderBy(cb.desc(orRoot.get(OrdreSortie_.dateOrdreSortie)));
+        cq.select(orRoot).where(cb.equal(orRoot.get(OrdreSortie_.active), true)).orderBy(cb.desc(orRoot.get(OrdreSortie_.dateOrdreSortie)));
         return getManager().createQuery(cq).getResultList(); 
     }
 

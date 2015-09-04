@@ -36,15 +36,17 @@
                     </p:column>
 
                     <p:column headerText="Articles" >  
-                        <p:commandButton  id="a" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
-                            <f:setPropertyActionListener value="#{bon}" target="#{ordreSortieBean.bonSortie}"/>
-                        </p:commandButton>
+                        <p:commandLink id="a" onclick="PF('dlgArticles').show()">
+                            <h:graphicImage value="./../images/plus.jpeg" />
+                            <f:setPropertyActionListener value="#{bon}" target="#{ordreSortieBean.bonSortie}"/>                            
+                        </p:commandLink>
                         <p:tooltip for="a" value="cliquez ici pour ajouter des demandes à ce bon"/>
                     </p:column>
                     <p:column headerText="Imprimer" >  
-                        <p:commandButton  id="q" onclick="PF('dlgBon').show()" icon="ui-icon-arrowrefresh-1-w" >
-                            <f:setPropertyActionListener value="#{bon}" target="#{ordreSortieBean.bonSortie}"/>
-                        </p:commandButton>
+                         <p:commandLink id="q" onclick="PF('dlgBon').show()">
+                            <h:graphicImage value="./../images/pdf.png" />
+                            <f:setPropertyActionListener value="#{bon}" target="#{ordreSortieBean.bonSortie}"/>                            
+                        </p:commandLink>
                         <p:tooltip for="q" value="cliquez ici pour imprimer ce bon de sortie"/>
                     </p:column>
 
@@ -120,6 +122,7 @@
                 </h:form>
                 <p:separator/>
                 <h:inputHidden value="#{ordreSortieBean.bonSortie.id}"  />
+                <h:inputHidden value="#{ordreSortieBean.bonSortie.version}"  />
             </p:dialog>
 
 

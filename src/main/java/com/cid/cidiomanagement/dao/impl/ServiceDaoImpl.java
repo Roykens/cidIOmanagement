@@ -5,6 +5,7 @@ import com.cid.cidiomanagement.entities.Service;
 import com.cid.cidiomanagement.entities.Service_;
 import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.impl.GenericDao;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -23,5 +24,16 @@ public class ServiceDaoImpl extends GenericDao<Service, Long> implements IServic
         cq.where(cb.like(servRoot.get(Service_.code), code));
         return getManager().createQuery(cq).getSingleResult();
     }
+
+    @Override
+    public List<Service> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Service> cq = cb.createQuery(Service.class);
+        Root<Service> serRoot = cq.from(Service.class);
+        cq.select(serRoot).where(cb.equal(serRoot.get(Service_.active), true));
+        return getManager().createQuery(cq).getResultList();
+    }
+    
+    
     
 }

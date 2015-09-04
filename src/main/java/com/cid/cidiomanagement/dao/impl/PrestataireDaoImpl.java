@@ -6,11 +6,10 @@ import com.cid.cidiomanagement.entities.Prestataire;
 import com.cid.cidiomanagement.entities.Prestataire_;
 import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.impl.GenericDao;
-import java.io.Serializable;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import org.apache.xmlbeans.impl.tool.PrettyPrinter;
 
 /**
  *
@@ -35,5 +34,16 @@ public class PrestataireDaoImpl extends GenericDao<Prestataire, Long> implements
         cq.where(cb.equal(pRoot.get(Prestataire_.bonCommandes), commande));
         return getManager().createQuery(cq).getSingleResult();
     }
+
+    @Override
+    public List<Prestataire> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Prestataire> cq = cb.createQuery(Prestataire.class);
+        Root<Prestataire> presRoot= cq.from(Prestataire.class);
+        cq.select(presRoot).where(cb.equal(presRoot.get(Prestataire_.active), true));
+        return getManager().createQuery(cq).getResultList();
+    }
+    
+    
     
 }

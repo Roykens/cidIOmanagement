@@ -59,7 +59,8 @@ public class PrestataireServiceImpl implements IPrestataireService {
         try {
             Prestataire prestataire = prestataireDao.findById(id);
             if(prestataire != null){
-                prestataireDao.delete(prestataire);
+                prestataire.setActive(false);
+                prestataireDao.update(prestataire);
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(PrestataireServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

@@ -7,6 +7,7 @@ import com.cid.cidiomanagement.entities.Categorie_;
 import com.royken.generic.dao.DataAccessException;
 import com.royken.generic.dao.impl.GenericDao;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -21,6 +22,17 @@ public class CategorieDaoImpl extends GenericDao<Categorie, Long> implements ICa
     public Categorie findByArticle(Article article) throws DataAccessException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<Categorie> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Categorie> cq = cb.createQuery(Categorie.class);
+        Root<Categorie> catRoot = cq.from(Categorie.class);
+        cq.select(catRoot).where(cb.equal(catRoot.get(Categorie_.active), true));
+        return getManager().createQuery(cq).getResultList();
+    }
+    
+    
 
     @Override
     public Categorie findByNomenclature(String nomenclature) throws DataAccessException {

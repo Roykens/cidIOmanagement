@@ -3,6 +3,7 @@ package com.cid.cidiomanagement.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,6 +42,9 @@ public class BonSortie implements Serializable{
     
     @ManyToOne
     private Personnel personnel;
+    
+    @Basic
+    private boolean active = true;
     
 
     public int getVersion() {
@@ -89,6 +93,14 @@ public class BonSortie implements Serializable{
 
     public void setPersonnel(Personnel personnel) {
         this.personnel = personnel;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     

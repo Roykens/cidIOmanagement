@@ -2,6 +2,7 @@ package com.cid.cidiomanagement.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,6 +33,9 @@ public class Personnel implements Serializable{
     
     @OneToMany(mappedBy = "personnel")
     private List<BonSortie> bonSorties;
+    
+    @Basic
+    private boolean active = true;
 
     public int getVersion() {
         return version;
@@ -71,6 +75,14 @@ public class Personnel implements Serializable{
 
     public void setBonSorties(List<BonSortie> bonSorties) {
         this.bonSorties = bonSorties;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
     

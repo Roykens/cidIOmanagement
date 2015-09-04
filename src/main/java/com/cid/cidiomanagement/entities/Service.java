@@ -33,6 +33,9 @@ public class Service implements Serializable{
     @Basic
     @Column(unique = true)
     private String code;
+    
+    @Basic
+    private boolean active = true;
 
     public int getVersion() {
         return version;
@@ -72,6 +75,14 @@ public class Service implements Serializable{
 
     public void setPersonnels(List<Personnel> personnels) {
         this.personnels = personnels;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     

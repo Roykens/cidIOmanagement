@@ -37,10 +37,11 @@
                         <h:outputText value="#{ordre.etatType}" />  
                     </p:column>
 
-                    <p:column headerText="Imprimer" >  
-                        <p:commandButton  id="q" onclick="PF('dlgBon').show()" icon="ui-icon-arrowrefresh-1-w" >
-                            <f:setPropertyActionListener value="#{ordre}" target="#{ordreSortieBean.ordreSortie}"/>
-                        </p:commandButton>
+                    <p:column headerText="Imprimer" > 
+                        <p:commandLink id="q" onclick="PF('dlgOrdre').show()">
+                            <h:graphicImage value="./../images/pdf.png" />
+                            <f:setPropertyActionListener value="#{ordre}" target="#{ordreSortieBean.ordreSortie}"/>                           
+                        </p:commandLink>
                         <p:tooltip for="q" value="cliquez ici pour imprimer ce bon de sortie"/>
                     </p:column>
 
@@ -49,6 +50,28 @@
                     </f:facet> 
                 </p:dataTable> 
             </h:form>
+
+            <p:dialog modal="true" header="Confirmer l'impression" widgetVar="dlgOrdre" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
+                <h:form id="formordre" enctype="multipart/form-data">
+                    <h:panelGrid id="display" columns="2" > 
+                      
+                        <h:outputText value="Objet"/>
+                        <p:inputText value="#{ordreSortieBean.objet}"/>
+                        <h:outputText value="No Ordre"/>
+                        <p:inputText value="#{ordreSortieBean.noOrdre}"/>
+                        <h:outputText value="No Chapitre"/>
+                        <p:inputText value="#{ordreSortieBean.noChapitre}"/>
+                        <p:outputLabel for="popupor" value="Date ordre" />
+                        <p:calendar id="popupor" value="#{ordreSortieBean.dateOrdre}" />
+                        <p:commandButton ajax="false" value="Imprimer l'ordre de sortie"  style="margin-left: 10px; margin-top: 10px;" action="#{ordreSortieBean.produceOrdreSortie()}" update=":list:bonTable">
+                        </p:commandButton>
+                    </h:panelGrid>
+                </h:form>
+                <p:separator/>
+                <h:inputHidden value="#{ordreSortieBean.ordreSortie.id}"  />
+                <h:inputHidden value="#{ordreSortieBean.ordreSortie.version}"  />
+            </p:dialog>
+
             <p:dialog id="dialog" header="Modifier une ordre" widgetVar="modifierDialog" resizable="false"  
                       width="400" showEffect="clip" hideEffect="explode" modal="true">  
                 <h:form id ="updatform">
@@ -57,6 +80,8 @@
                         <p:inputText  id="en" value="#{ordreSortieBean.ordreSortie.dateString}" required="true" requiredMessage="Veuillez choisir la période" /> 
                         <h:outputText value="Date : "/> 
                         <p:inputText  id="entree0" value="#{ordreSortieBean.ordreSortie.dateOrdreSortie}"/>
+                        <h:inputHidden   value="#{ordreSortieBean.ordreSortie.id}"/>
+                        <h:inputHidden   value="#{ordreSortieBean.ordreSortie.version}"/>
                         <f:facet name="footer"> <br/> 
                             <p:commandButton value="Modifier" action="#{ordreSortieBean.updateOrdre()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:ordreTable" />  
                         </f:facet>
@@ -70,7 +95,8 @@
             <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
                 <h:form id="supform">
                     <h:inputHidden  id="entree11" value="#{ordreSortieBean.ordreSortie.id}"/>
-                    <p:commandButton value="Yes" action="#{donneesBean.deleteCategorie()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:ordreTable"/>
+                    <h:inputHidden   value="#{ordreSortieBean.ordreSortie.version}"/>
+                    <p:commandButton value="Yes" action="#{ordreSortieBean.deleteOrdre()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:ordreTable"/>
                     <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                 </h:form>
             </p:confirmDialog>

@@ -160,6 +160,7 @@ public class DonneesBean {
     public String updateCategorie(){
         try {
             donneeService.saveOrUpdateCategorie(categorieChoisi);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", categorieChoisi.getNom() + " a été modifié "));
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -170,6 +171,7 @@ public class DonneesBean {
         try {
             System.out.println("L'id choisi est : "  + categorieChoisi.getId());
             donneeService.deleteCategorie(categorieChoisi.getId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", categorie.getNom() + " a été supprimé "));
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -183,6 +185,7 @@ public class DonneesBean {
             Categorie cat = donneeService.findByNomenclature(reference);
             article.setCategorie(cat);
             donneeService.saveOrUpdateArticle(article);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", article.getDesignation() + " a été enregistré "));
             reference = new String();
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -195,6 +198,7 @@ public class DonneesBean {
             Categorie cat = donneeService.findByNomenclature(reference);
             article.setCategorie(cat);
             donneeService.saveOrUpdateArticle(article);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", article.getDesignation() + " a été modifié "));
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -204,6 +208,7 @@ public class DonneesBean {
     public String deleteArticle(){
         try {
             donneeService.deleteArticle(article.getId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", article.getDesignation() + " a été supprimé"));
         } catch (ServiceException ex) {
             Logger.getLogger(DonneesBean.class.getName()).log(Level.SEVERE, null, ex);
         }

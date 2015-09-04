@@ -1,8 +1,10 @@
 package com.cid.cidiomanagement;
 
+import com.cid.cidiomanagement.entities.Affectation;
 import com.cid.cidiomanagement.entities.Commande;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
+import com.cid.cidiomanagement.service.IOrdreSortieService;
 import com.cid.cidiomanagement.service.IPersonnelService;
 import com.cid.cidiomanagement.service.IUtilisateurService;
 import com.cid.cidiomanagement.service.ServiceException;
@@ -28,6 +30,7 @@ public class App {
         IUtilisateurService serv = (IUtilisateurService) ctx.getBean("IUtilisateurService");
         ICommandeService commserv = (ICommandeService) ctx.getBean("ICommandeService");
          IPersonnelService persserv = (IPersonnelService) ctx.getBean("IPersonnelService");
+         IOrdreSortieService sortiserv = (IOrdreSortieService) ctx.getBean("IOrdreSortieService");
      //   Etudiant etudiant = new Etudiant();
 //        Categorie cat = new Categorie();
 //        cat.setNomenclatureSommaire("categorie");
@@ -41,21 +44,35 @@ public class App {
 //        for (Utilisateur user1 : user) {
 //            System.out.println(user1);
 //        }
+         List<Affectation> affectations = sortiserv.findAllAffectationByOrdre(5L);
+         System.out.println(affectations);
+         
+//         System.out.println("Les articles");
+//         for (Affectation affectation : affectations) {
+//             System.out.println(affectation.getArticle());
+//        }
+         
+         List<Affectation> affectations1 = mergeList(affectations);
+         System.out.println("Les affectations");
+         System.out.println(affectations1);
+//         for (Affectation affectation : affectations1) {
+//             System.out.println(affectation.getArticle());
+//        }
         
-        List<Commande> commandes = commserv.findAllByBon(1L);
+//        List<Commande> commandes = commserv.findAllByBon(1L);
        // System.out.println("La taille : " + commandes.size());
        // System.out.println("Les categories :" + getCategories(commandes));
         
         System.out.println("Transformation ================= ");
        // System.out.println(transform(commandes));
         
-        Set<String> cat = new TreeSet<>();
-              cat =  getCategories(commandes);
-        Map<String, List<Commande>> data = transform(commandes);
-        for (String cat1 : cat) {
-            List<Commande> temp = data.get(cat1);
-            System.out.println(" liste 1 : " + temp);
-        }
+//        Set<String> cat = new TreeSet<>();
+//              cat =  getCategories(commandes);
+//        Map<String, List<Commande>> data = transform(commandes);
+//        for (String cat1 : cat) {
+//            List<Commande> temp = data.get(cat1);
+//            System.out.println(" liste 1 : " + temp);
+//        }
         
         
 //        for (Commande commande : commandes) {
@@ -63,8 +80,8 @@ public class App {
 //        }
 ////        Map<String, Commande> result = commandes.stream().collect(Collectors.toMap(Commande::getCategorie,(c)->c));
 ////        System.out.println(result);
-        Map<String, Commande> result = nameMap(commandes);
-        System.out.println(result);
+//        Map<String, Commande> result = nameMap(commandes);
+//        System.out.println(result);
         
          
 //         Service ser = new Service();
@@ -106,4 +123,26 @@ public class App {
         return result;
     }
     
+     private static List<Affectation> mergeList(List<Affectation> affectations) {
+        List<Affectation> result = new ArrayList<>();
+        if(affectations.size() > 0){
+            result.add(affectations.get(0));
+            affectations.remove(0);
+        }
+        for (Affectation tmp11 : affectations) {
+            for (int i = 0; i < result.size(); i++) {
+               
+                    if (result.get(i).myCompare(tmp11)) {
+                        System.out.println("C'est bon");
+                        result.get(i).setNombre(tmp11.getNombre() + result.get(i).getNombre());
+                        break;
+                    } else if(i == result.size()-1){
+                        System.out.println("C'est bon2");
+                        result.add(tmp11);
+                        break;
+                    }               
+            }
+        }
+        return result;
+    }
 }

@@ -44,22 +44,27 @@
                     </p:column>
 
                     <p:column headerText="Articles" >  
-                        <p:commandButton  id="a" onclick="PF('dlgArticles').show()" icon="ui-icon-arrowrefresh-1-w" >
+                        <p:commandLink id="a" onclick="PF('dlgArticles').show()">
+                            <h:graphicImage value="./../images/plus.jpeg" />
                             <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
-                        </p:commandButton>
+                        </p:commandLink>
+                        
                         <p:tooltip for="a" value="cliquez ici pour ajouter des commandes à ce bon"/>
                     </p:column>
                     <p:column headerText="Imprimer" >  
-                        <p:commandButton  id="q" onclick="PF('dlgBon').show()" icon="ui-icon-arrowrefresh-1-w" >
+                        <p:commandLink id="q" onclick="PF('dlgBon').show()">
+                            <h:graphicImage value="./../images/pdf.png" />
                             <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
-                        </p:commandButton>
+                        </p:commandLink>
+                        
                         <p:tooltip for="q" value="cliquez ici pour imprimer ce bon de commande"/>
                     </p:column>
 
                     <p:column headerText="Ordre D'Entrée" >  
-                        <p:commandButton  id="z" onclick="PF('dlgOrdre').show()" icon="ui-icon-arrowrefresh-1-w" >
+                        <p:commandLink id="z" onclick="PF('dlgOrdre').show()">
+                            <h:graphicImage value="./../images/pdf.png" />
                             <f:setPropertyActionListener value="#{bon}" target="#{commandeBean.bonCommande}"/>
-                        </p:commandButton>
+                        </p:commandLink>
                         <p:tooltip for="z" value="cliquez ici pour imprimer l'Ordre d'Entrée de ce bon"/>
                     </p:column>
 
@@ -75,9 +80,6 @@
                     <p:growl id="growl1" showDetail="true" /> 
 
                     <h:panelGrid  class="rightPosition"  id="displayUpdate" columns="2">                                        
-
-
-
                         <h:outputText value="Articles"/>
                         <p:selectOneMenu id="art" value="#{commandeBean.nomArticle}" required="true" style="width:100%" filter="true" requiredMessage="L'article est obligatoire">
                             <f:selectItems value="#{commandeBean.articles}" />  
@@ -122,6 +124,7 @@
 
 
                 <h:inputHidden value="#{commandeBean.bonCommande.id}"  />
+                <h:inputHidden value="#{commandeBean.bonCommande.version}"  />
             </p:dialog>
 
 
@@ -132,19 +135,27 @@
                 </h:form>
                 <p:separator/>
                 <h:inputHidden value="#{commandeBean.bonCommande.id}"  />
+                <h:inputHidden value="#{commandeBean.bonCommande.version}"  />
             </p:dialog>
 
             <p:dialog modal="true" header="Confirmer l'impression" widgetVar="dlgOrdre" hideEffect="explode" showEffect="explode" resizable="false" width="900px" fitViewport="true">
                 <h:form id="formordre" enctype="multipart/form-data">
+                    <h:panelGrid id="display" columns="2" > 
                     <h:outputText value="No Facture"/>
                     <p:inputText value="#{commandeBean.noFacture}"/>
-                     <p:outputLabel for="popupor" value="Date Facture" />
-                     <p:calendar id="popupor" value="#{commandeBean.dateFacture}" />
+                    <h:outputText value="No Ordre"/>
+                    <p:inputText value="#{commandeBean.noOrdreEntree}"/>
+                    <h:outputText value="No Chapitre"/>
+                    <p:inputText value="#{commandeBean.noChapitre}"/>
+                    <p:outputLabel for="popupor" value="Date Facture" />
+                    <p:calendar id="popupor" value="#{commandeBean.dateFacture}" />
                     <p:commandButton ajax="false" value="Imprimer l'ordre d'entrée"  style="margin-left: 10px; margin-top: 10px;" action="#{commandeBean.produireOrdreEntree()}" update=":list:bonTable">
                     </p:commandButton>
+                    </h:panelGrid>
                 </h:form>
                 <p:separator/>
                 <h:inputHidden value="#{commandeBean.bonCommande.id}"  />
+                <h:inputHidden value="#{commandeBean.bonCommande.version}"  />
             </p:dialog>
 
 
@@ -171,7 +182,6 @@
                     </h:panelGrid> 
                 </h:form>
             </p:dialog>
-
 
         </div>
     </h:body>

@@ -79,6 +79,7 @@ public class PersonnelServiceImpl implements IPersonnelService {
         try {
             Personnel personnel = personnelDao.findById(id);
             if (personnel != null) {
+               
                 personnelDao.delete(personnel);
             }
         } catch (DataAccessException ex) {
@@ -142,9 +143,16 @@ public class PersonnelServiceImpl implements IPersonnelService {
         try {
             Service service = serviceDao.findById(id);
             if(service == null){
+                
                 throw new ServiceException("Service not found");
             }
-            serviceDao.delete(service);
+            service.setActive(false);
+            serviceDao.update(service);
+            List<Personnel> personnels = personnelDao.findAllPersonnelByService(service);
+            for (Personnel personnel : personnels) {
+                personnel.setActive(false);
+                personnelDao.update(personnel);
+            }
         } catch (DataAccessException ex) {
             Logger.getLogger(PersonnelServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

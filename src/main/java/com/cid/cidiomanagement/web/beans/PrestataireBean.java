@@ -9,10 +9,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -73,6 +75,7 @@ public class PrestataireBean implements Serializable{
     public String savePrestataire(){
         try {
             prestataireService.saveOrUpdatePrestataire(prestataire);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", prestataire.getNom() + " a été enregistré "));
         } catch (ServiceException ex) {
             Logger.getLogger(PrestataireBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,6 +85,7 @@ public class PrestataireBean implements Serializable{
     public String updatePrestataire(){
         try {
             prestataireService.saveOrUpdatePrestataire(prestataire);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", prestataire.getNom() + " a été modifié "));
         } catch (ServiceException ex) {
             Logger.getLogger(PrestataireBean.class.getName()).log(Level.SEVERE, null, ex);
         }

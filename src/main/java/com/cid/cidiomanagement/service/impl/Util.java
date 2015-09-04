@@ -8,7 +8,10 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPTable;
 import java.net.URL;
 import org.springframework.core.io.ClassPathResource;
@@ -140,5 +143,50 @@ public class Util {
         cell.setBorderColorBottom(BaseColor.WHITE);
         cell.setBorderColorTop(BaseColor.WHITE);
         return cell;
+    }
+    
+    public static PdfPCell createDotedValueCell(String content, Font bf) {
+        PdfPCell cell = new PdfPCell(new Phrase(content, bf));
+        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
+        //cell.setCellEvent(this.new DottedCell2());
+        //cell.setBorder(PdfPCell.NO_BORDER);
+
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingBottom(4f);
+        cell.setPaddingTop(5f);
+        cell.setBorderWidth(0.01f);
+        //cell.setBorderColorLeft(BaseColor.BLACK);
+        //cell.setBorderColorBottom(BaseColor.WHITE);
+        //cell.setBorderColorTop(BaseColor.WHITE);
+        return cell;
+    }
+
+    class DottedCell implements PdfPCellEvent {
+
+        @Override
+        public void cellLayout(PdfPCell cell, Rectangle position,
+                PdfContentByte[] canvases) {
+            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+            canvas.setLineDash(1f, 1f);
+            canvas.rectangle(position.getLeft(), position.getBottom(),
+                    position.getWidth(), position.getHeight());
+            canvas.stroke();
+        }
+    }
+
+    class DottedCell2 implements PdfPCellEvent {
+
+        @Override
+        public void cellLayout(PdfPCell cell, Rectangle position,
+                PdfContentByte[] canvases) {
+            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
+            canvas.setLineDash(3f, 3f);
+            //canvas.moveTo(position.getLeft(), position.getTop());
+            canvas.lineTo(position.getRight(), position.getTop());
+            canvas.moveTo(position.getLeft(), position.getBottom());
+            canvas.lineTo(position.getRight(), position.getBottom());
+            canvas.stroke();
+        }
     }
 }

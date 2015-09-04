@@ -3,9 +3,11 @@
   xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
                       http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
 
-	<url-mapping id="login">
-		<pattern value="/login" />
-		<view-id value="login.xhtml" />
+    
+    
+        <url-mapping id="login">
+		<pattern value="/" />
+		<view-id value="/faces/../login.xhtml" />
 	</url-mapping>
         <url-mapping id="accueil">
 		<pattern value="/accueil" />
@@ -13,40 +15,42 @@
 	</url-mapping>
         <url-mapping id="cate">
 		<pattern value="/categories" />
-		<view-id value="/faces/categories/categories.xhtml" />
+		<view-id value="/faces/../categories/categories.xhtml" />
 	</url-mapping>
         <url-mapping id="arti">
 		<pattern value="/articles" />
-		<view-id value="/faces/articles/articles.xhtml" />
+		<view-id value="/faces/../articles/articles.xhtml" />
 	</url-mapping>
         <url-mapping id="presta">
 		<pattern value="/prestataires" />
-		<view-id value="/faces/prestataires/prestataires.xhtml" />
+		<view-id value="/faces/../prestataires/prestataires.xhtml" />
 	</url-mapping>
         <url-mapping id="bonCommandes">
 		<pattern value="/bonCommandes" />
-		<view-id value="/faces/commandes/commandes.xhtml" />
+		<view-id value="/faces/../commandes/commandes.xhtml" />
 	</url-mapping>
         <url-mapping id="serv">
 		<pattern value="/services" />
-		<view-id value="/faces/services/services.xhtml" />
+		<view-id value="/faces/../services/services.xhtml" />
 	</url-mapping>
         <url-mapping id="perso">
 		<pattern value="/personnesl" />
-		<view-id value="/faces/personnels/personnels.xhtml" />
+		<view-id value="/faces/../personnels/personnels.xhtml" />
 	</url-mapping>
         <url-mapping id="bonSorti">
 		<pattern value="/bonSortie" />
-		<view-id value="/faces/bonsorties/bonsorties.xhtml" />
+		<view-id value="/faces/../bonsorties/bonsorties.xhtml" />
 	</url-mapping>
         <url-mapping id="ordreSort">
 		<pattern value="/ordreSortie" />
-		<view-id value="/faces/ordresorties/ordresorties.xhtml" />
+		<view-id value="/faces/../ordresorties/ordresorties.xhtml" />
 	</url-mapping>
         <url-mapping id="utilis">
 		<pattern value="/utilisateurs" />
-		<view-id value="/faces/utilisateurs/utilisateurs.xhtml" />
+		<view-id value="/faces/../utilisateurs/utilisateurs.xhtml" />
 	</url-mapping>
+	
+        
         
 
 </pretty-config>

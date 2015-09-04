@@ -18,22 +18,20 @@
                 <f:view>
                     <p:panel header="Connexion" style="width: 500px;" id="tabClass">
                         <f:facet name="title">
-                            <p:graphicImage value="./images/icon.png"/>
+                            <h:graphicImage value="./images/icon.png"/>
                             <h:outputText value="Connexion"/>
                         </f:facet>
-
-                        
-                            <h:form >            
+                           <h:form >            
                                 <p:growl id="growl"  showDetail="true"  />
                                 <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputLabel for="username" value="Username:" />
-                                    <p:inputText id="username" value="#{loginBean.userName}" required="true" label="username" />
+                                    <h:outputLabel for="username" value="Nom utilisateur:" />
+                                    <p:inputText id="username" value="#{loginBean.userName}" required="true" label="username" requiredMessage="Le nom d'utilisateur est obligatoire"/>
 
-                                    <h:outputLabel for="password" value="Password:" />
-                                    <p:password id="password" value="#{loginBean.password}" required="true" label="password" feedback="false"/>
+                                    <h:outputLabel for="password" value="Mot de passe:" />
+                                    <p:password id="password" value="#{loginBean.password}" required="true" label="password" feedback="false" requiredMessage="Le mot de passe est obligatoire"/>
 
                                     <f:facet name="footer">
-                                        <p:commandButton value="Login" update="growl" action="#{loginBean.login()}"/>
+                                        <p:commandButton value="Connexion" update="growl" action="#{loginBean.login()}"/>
                                     </f:facet>  
                                 </h:panelGrid>
 

@@ -34,10 +34,15 @@ public class AffectationDaoImpl extends GenericDao<Affectation, Long> implements
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Affectation> cq = cb.createQuery(Affectation.class);
         CriteriaQuery<BonSortie> cq2 = cb.createQuery(BonSortie.class);
+        Root<BonSortie> bsRoot = cq2.from(BonSortie.class);
         Root<Affectation> afRoot = cq.from(Affectation.class);
-        Path<BonSortie> bsPath = afRoot.get(Affectation_.bonSortie);   
+        Path<BonSortie> bsPath = afRoot.get(Affectation_.bonSortie); 
+        cq2.select(bsRoot);
         List<BonSortie> sorties = getManager().createQuery(cq2).getResultList();
+        System.out.println(sorties);
         cq.where(cb.and(cb.equal(bsPath.get(BonSortie_.ordeSortie), ordreSortie), afRoot.get(Affectation_.bonSortie).in(sorties)));
+        System.out.println("DAO");
+        //System.out.println(getManager().createQuery(cq).getResultList());
         return getManager().createQuery(cq).getResultList();
     }
     

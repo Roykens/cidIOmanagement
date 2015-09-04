@@ -46,5 +46,16 @@ public class ArticleDaoImpl extends GenericDao<Article, Long> implements IArticl
         cq.where(cb.like(artRoot.get(Article_.designation), nom));
         return getManager().createQuery(cq).getSingleResult();
     }
+
+    @Override
+    public List<Article> findAll() throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Article> cq = cb.createQuery(Article.class);
+        Root<Article> artRoot = cq.from(Article.class);
+        cq.select(artRoot).where(cb.equal(artRoot.get(Article_.active), true));
+        return getManager().createQuery(cq).getResultList();
+    }
+    
+    
     
 }

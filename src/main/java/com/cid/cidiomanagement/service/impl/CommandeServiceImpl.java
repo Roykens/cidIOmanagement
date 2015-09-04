@@ -7,6 +7,7 @@ import com.cid.cidiomanagement.dao.ICommandeDao;
 import com.cid.cidiomanagement.dao.IPrestataireDao;
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonCommande;
+import com.cid.cidiomanagement.entities.BonSortie;
 import com.cid.cidiomanagement.entities.Commande;
 import com.cid.cidiomanagement.entities.EtatType;
 import com.cid.cidiomanagement.entities.Prestataire;
@@ -124,7 +125,8 @@ public class CommandeServiceImpl implements ICommandeService {
         try {
             BonCommande comm = bonCommandeDao.findById(id);
             if (comm != null) {
-                bonCommandeDao.delete(comm);
+                comm.setActive(false);
+                bonCommandeDao.update(comm);
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -186,7 +188,7 @@ public class CommandeServiceImpl implements ICommandeService {
     }
 
     @Override
-    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream, String noFacture, Date dateFacture) throws ServiceException {
+    public void produireOrdreEntree(Long bonCommandeId, OutputStream stream, String noFacture, Date dateFacture, int noOrdre, int noChapitre) throws ServiceException {
         try {
             BonCommande bc = bonCommandeDao.findById(bonCommandeId);
             Document doc = new Document();
@@ -194,7 +196,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.setPageSize(PageSize.A4);
             doc.open();
             Util.produceHeader(doc);
-            produceOrdreEntree(bc, doc, noFacture, dateFacture);
+            produceOrdreEntree(bc, doc, noFacture, dateFacture, noOrdre, noChapitre);
             doc.close();
 
         } catch (DataAccessException | DocumentException ex) {
@@ -365,7 +367,7 @@ public class CommandeServiceImpl implements ICommandeService {
             underline2.setUnderline(0.1f, -2f);
             Paragraph p3 = new Paragraph(underline2);
             //p3.add(underline2);
-            p3.add(new Chunk("toto", bf12));
+            p3.add(new Chunk(bon.getObjet(), bf12));
             doc.add(p3);
             doc.add(new Chunk("\n"));
 
@@ -581,7 +583,7 @@ public class CommandeServiceImpl implements ICommandeService {
         }
     }
 
-    private void produceOrdreEntree(BonCommande bc, Document doc, String noFacture, Date dateFacture) {
+    private void produceOrdreEntree(BonCommande bc, Document doc, String noFacture, Date dateFacture, int noOrdre, int noChapitre) {
         try {
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
             Font bf12i = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
@@ -665,7 +667,7 @@ public class CommandeServiceImpl implements ICommandeService {
             Chunk ordre = new Chunk("ORDRE D'ENTREE N", fontBig);
             Chunk expo = new Chunk("o", fontEntete);
             expo.setTextRise(5f);
-            Chunk un = new Chunk(" (1)..................................\n", fontBig);
+            Chunk un = new Chunk(String.valueOf(noOrdre)+"                       \n", fontBig);
             Chunk in = new Chunk("INCOMING ORDER No.", fontBig2);
             Chunk under = new Chunk("                            \n", fontBig);
             under.setUnderline(0.5f, -2f);
@@ -682,7 +684,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(or);
             StringBuilder stb = new StringBuilder();
             stb.append("EXERCICE ...................................................................\n")
-                    .append("CHAPITRE .............................................DU BUDGET\n")
+                    .append("CHAPITRE "+ String.valueOf(noChapitre)+"                        DU BUDGET\n")
                     .append("IMPUTATION BUDGETAIRE : ..................................\n")
                     .append("........................................................................................\n")
                     .append("........................................................................................\n")
@@ -857,21 +859,20 @@ public class CommandeServiceImpl implements ICommandeService {
                     //art = temp.get(i).getArticle();
                     //art.setQuantite(artQ+nombrCommande);
                     //articleDao.update(art);
-                    table.addCell(createDotedValueCell(String.valueOf(index++), bf12));
-                    table.addCell(createDotedValueCell(temp.get(i).getCategorie(), bf12));
-                    table.addCell(createDotedValueCell(temp.get(i).getArticle().getDesignation(), bf12));
-                    table.addCell(createDotedValueCell(temp.get(i).getArticle().getConditionnement(), bf12));
-                    table.addCell(createDotedValueCell(String.valueOf(nombrCommande), bf12));
-                    table.addCell(createDotedValueCell(String.valueOf(temp.get(i).getPrixArticle()), bf12));
-                    table.addCell(createDotedValueCell(String.valueOf(nombrCommande * temp.get(i).getPrixArticle()), bf12));
+                    table.addCell(Util.createDotedValueCell("", bf12));
+                    table.addCell(Util.createDotedValueCell(temp.get(i).getCategorie(), bf12));
+                    table.addCell(Util.createDotedValueCell(temp.get(i).getArticle().getDesignation(), bf12));
+                    table.addCell(Util.createDotedValueCell(temp.get(i).getArticle().getConditionnement(), bf12));
+                    table.addCell(Util.createDotedValueCell(String.valueOf(nombrCommande), bf12));
+                    table.addCell(Util.createDotedValueCell(String.valueOf(temp.get(i).getPrixArticle()), bf12));
+                    table.addCell(Util.createDotedValueCell(String.valueOf(nombrCommande * temp.get(i).getPrixArticle()), bf12));
                     prixTemp += temp.get(i).getNombre() * temp.get(i).getPrixArticle();
                     if (i != temp.size() - 1) {
-                        table.addCell(createDotedValueCell("", bf12));
-                        table.addCell(createDotedValueCell("", bf12));
+                        table.addCell(Util.createDotedValueCell("", bf12));
+                        table.addCell(Util.createDotedValueCell("", bf12));
                     } else {
-
-                        table.addCell(createDotedValueCell(String.valueOf((int) Math.floor(prixTemp)), bf12));
-                        table.addCell(createDotedValueCell("", bf12));
+                        table.addCell(Util.createDotedValueCell(String.valueOf((int) Math.floor(prixTemp)), bf12));
+                        table.addCell(Util.createDotedValueCell("", bf12));
                     }
                 }
                 prixFinal += prixTemp;
@@ -1056,6 +1057,21 @@ public class CommandeServiceImpl implements ICommandeService {
         cell.setBorderColorBottom(BaseColor.WHITE);
         cell.setBorderColorTop(BaseColor.WHITE);
         return cell;
+    }
+
+    @Override
+    public void deleteBonCommande(Long idBon) throws ServiceException {
+        try {
+            BonCommande bc = bonCommandeDao.findById(idBon);
+            if(bc != null){
+                if(bc.getEtat() != EtatType.acheve){
+                    bc.setActive(false);
+                    bonCommandeDao.update(bc);
+                }
+            }
+        } catch (DataAccessException ex) {
+            Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     class DottedCell implements PdfPCellEvent {

@@ -113,8 +113,26 @@ public class Affectation implements Serializable{
         this.prix = prix;
     }
     
+     public String getCategorie(){
+        return article.getCategorie().getNomenclatureSommaire();
+    }
     
     
+    public boolean myCompare(Object obj){
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Affectation other = (Affectation) obj;
+        if (!Objects.equals(this.article, other.article)) {
+            return false;
+        }
+        
+        return Objects.equals(this.prix, other.prix);
+           
+    }
     
 
     @Override
