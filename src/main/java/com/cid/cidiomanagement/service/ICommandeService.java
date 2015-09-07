@@ -31,7 +31,7 @@ public interface ICommandeService {
     
     public void produireOrdreEntree(Long bonCommandeId, OutputStream stream, String noFacture, java.util.Date dateFacture, int noOrdre, int noChapitre) throws ServiceException;
     
-    public void produceTrash(Long bonId, String objet ,OutputStream outputStream) throws ServiceException;
+    public void produceBonCommande(Long bonId, String objet ,OutputStream outputStream) throws ServiceException;
       
       
     

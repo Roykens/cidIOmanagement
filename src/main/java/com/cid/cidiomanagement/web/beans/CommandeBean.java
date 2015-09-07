@@ -3,6 +3,7 @@ package com.cid.cidiomanagement.web.beans;
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonCommande;
 import com.cid.cidiomanagement.entities.Commande;
+import com.cid.cidiomanagement.entities.EtatType;
 import com.cid.cidiomanagement.entities.Prestataire;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
@@ -54,19 +55,22 @@ public class CommandeBean implements Serializable {
     Date dateFacture = new Date();
     int noOrdreEntree;
     int noChapitre;
+    boolean bcLoaded;
 
     /**
      * Creates a new instance of CommandeBean
      */
     public CommandeBean() {
         bonCommande = new BonCommande();
-       
+        bcLoaded = false;
+
     }
 
     @PostConstruct
     public void init() {
         //users = new Iuser();
         bonCommande = new BonCommande();
+        bcLoaded = false;
     }
 
     public ICommandeService getCommandeService() {
@@ -94,6 +98,9 @@ public class CommandeBean implements Serializable {
     }
 
     public Commande getCommande() {
+        if(commande == null){
+            commande = new Commande();
+        }
         return commande;
     }
 
@@ -102,9 +109,9 @@ public class CommandeBean implements Serializable {
     }
 
     public BonCommande getBonCommande() {
-         if(bonCommande == null){
+        if (bonCommande == null) {
             bonCommande = new BonCommande();
-                   // (BonCommande)super.getInstance(BonCommande.class);
+            // (BonCommande)super.getInstance(BonCommande.class);
         }
         return bonCommande;
     }
@@ -114,6 +121,9 @@ public class CommandeBean implements Serializable {
     }
 
     public Article getArticle() {
+        if(article == null){
+            article = new Article();
+        }
         return article;
     }
 
@@ -146,6 +156,16 @@ public class CommandeBean implements Serializable {
     }
 
     public List<Commande> getCommandes() {
+//        try {
+//            if (bonCommande.getId() != null && !bcLoaded) {
+//                commandes = commandeService.findAllByBon(bonCommande.getId());
+//                bcLoaded = true;
+//                return commandes;
+//            }
+//            return commandes;
+//        } catch (ServiceException ex) {
+//            Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         return commandes;
     }
 
@@ -236,12 +256,16 @@ public class CommandeBean implements Serializable {
 
     public void finirBon() {
 
-        for (Commande commande1 : commandes) {
-            try {
-                commande1.setBonCommande(bonCommande);
-                commandeService.saveOrUpdateCommande(commande1);
-            } catch (ServiceException ex) {
-                Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+        if (bonCommande.getEtat() != EtatType.acheve) {
+            for (Commande commande1 : commandes) {
+                try {
+                    if (commande1.getId() == null) {
+                        commande1.setBonCommande(bonCommande);
+                        commandeService.saveOrUpdateCommande(commande1);
+                    }
+                } catch (ServiceException ex) {
+                    Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         commandes = new ArrayList<>();
@@ -259,13 +283,14 @@ public class CommandeBean implements Serializable {
             commandeService.saveOrUpdateBon(bonCommande);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", bonCommande.getObjet() + " a été enregistré "));
             bonCommande = new BonCommande();
+            commandes = new ArrayList<>();
         } catch (ServiceException ex) {
             Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "success";
     }
 
-    public void procesVerbal() throws ServiceException, FileNotFoundException {
+    public void imprimerBonCommande() throws ServiceException, FileNotFoundException {
 
         System.out.println("Je suis ici \n\n\n");
         System.out.println(bonCommande);
@@ -277,14 +302,15 @@ public class CommandeBean implements Serializable {
                 HttpServletResponse hsr = (HttpServletResponse) response;
                 hsr.setContentType("application/pdf");
                 hsr.setHeader("Content-Disposition", "attachment; filename=pv.pdf");
-                commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels", ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                commandeService.produceBonCommande(bonCommande.getId(), "Commande de logiciels", ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
 
                 context.responseComplete();
             } catch (IOException ex) {
                 Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+            commandes =new ArrayList<>();
+            bonCommande = new BonCommande();
     }
 
     public void produireOrdreEntree() {
@@ -299,13 +325,15 @@ public class CommandeBean implements Serializable {
                 hsr.setContentType("application/pdf");
                 hsr.setHeader("Content-Disposition", "attachment; filename=ordreEntree.pdf");
 
-                // commandeService.produceTrash(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
+                // commandeService.produceBonCommande(bonCommande.getId(), "Commande de logiciels" ,((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream());
                 commandeService.produireOrdreEntree(bonCommande.getId(), ((HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse()).getOutputStream(), noFacture, dateFacture, noOrdreEntree, noChapitre);
                 context.responseComplete();
             } catch (IOException | ServiceException ex) {
                 Logger.getLogger(CommandeBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        commandes = new ArrayList<>();
+        bonCommande = new BonCommande();
     }
 
     public int getNoOrdreEntree() {
@@ -323,7 +351,5 @@ public class CommandeBean implements Serializable {
     public void setNoChapitre(int noChapitre) {
         this.noChapitre = noChapitre;
     }
-    
-    
 
 }

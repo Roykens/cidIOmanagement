@@ -116,4 +116,16 @@ public class UtilisateurServiceImpl implements UserDetailsService, IUtilisateurS
         return false;
     }
 
+    @Override
+    public void deleteUtilisateur(Long id) throws ServiceException {
+        try {
+            Utilisateur user = utilisateurDao.findById(id);
+            if(user != null){
+                utilisateurDao.delete(user);
+            }
+        } catch (DataAccessException ex) {
+            Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

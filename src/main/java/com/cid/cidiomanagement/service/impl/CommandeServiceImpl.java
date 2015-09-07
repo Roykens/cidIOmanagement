@@ -207,7 +207,7 @@ public class CommandeServiceImpl implements ICommandeService {
     }
 
     @Override
-    public void produceTrash(Long idBon, String objet, OutputStream outputStream) throws ServiceException {
+    public void produceBonCommande(Long idBon, String objet, OutputStream outputStream) throws ServiceException {
         try {
             BonCommande bon = bonCommandeDao.findById(idBon);
             if (bon == null) {
@@ -316,9 +316,9 @@ public class CommandeServiceImpl implements ICommandeService {
             Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
             List<Commande> commandes = commandeDao.findByBon(bon);
-            for (Commande commande : commandes) {
-                System.out.println(commande);
-            }
+//            for (Commande commande : commandes) {
+//                System.out.println(commande);
+//            }
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(bon.getDateCommande());
@@ -578,6 +578,10 @@ public class CommandeServiceImpl implements ICommandeService {
 //            cell2.addElement(new Chunk("    ", bf1));
 //            cell2.setBorderColorBottom(BaseColor.WHITE);
 //            footer.addCell(cell2);
+            if (bon.getEtat() != EtatType.acheve) {
+                bon.setEtat(EtatType.acheve);
+                bonCommandeDao.update(bon);
+            }
         } catch (DocumentException ex) {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -667,7 +671,7 @@ public class CommandeServiceImpl implements ICommandeService {
             Chunk ordre = new Chunk("ORDRE D'ENTREE N", fontBig);
             Chunk expo = new Chunk("o", fontEntete);
             expo.setTextRise(5f);
-            Chunk un = new Chunk(String.valueOf(noOrdre)+"                       \n", fontBig);
+            Chunk un = new Chunk(String.valueOf(noOrdre) + "                       \n", fontBig);
             Chunk in = new Chunk("INCOMING ORDER No.", fontBig2);
             Chunk under = new Chunk("                            \n", fontBig);
             under.setUnderline(0.5f, -2f);
@@ -684,7 +688,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(or);
             StringBuilder stb = new StringBuilder();
             stb.append("EXERCICE ...................................................................\n")
-                    .append("CHAPITRE "+ String.valueOf(noChapitre)+"                        DU BUDGET\n")
+                    .append("CHAPITRE " + String.valueOf(noChapitre) + "                        DU BUDGET\n")
                     .append("IMPUTATION BUDGETAIRE : ..................................\n")
                     .append("........................................................................................\n")
                     .append("........................................................................................\n")
@@ -918,6 +922,7 @@ public class CommandeServiceImpl implements ICommandeService {
             float relativewidth4[] = {6, 1, 6};
             firstTable = new PdfPTable(relativewidth4);
             firstTable.setWidthPercentage(100);
+            firstTable.keepRowsTogether(0, firstTable.getLastCompletedRowIndex());
             Calendar c = Calendar.getInstance();
             String moi = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
             moi = WordUtils.capitalize(moi);
@@ -1063,8 +1068,8 @@ public class CommandeServiceImpl implements ICommandeService {
     public void deleteBonCommande(Long idBon) throws ServiceException {
         try {
             BonCommande bc = bonCommandeDao.findById(idBon);
-            if(bc != null){
-                if(bc.getEtat() != EtatType.acheve){
+            if (bc != null) {
+                if (bc.getEtat() != EtatType.acheve) {
                     bc.setActive(false);
                     bonCommandeDao.update(bc);
                 }

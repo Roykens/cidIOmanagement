@@ -235,11 +235,11 @@ public class OrdreSortieBean implements Serializable{
             Article a = donneeService.findByDesignation(nomArticle);
             affectation.setArticle(a);
             affectations.add(affectation);
-            System.out.println("\n\n ============    J'ai exactement " + affectations.size() + " articles\n\n");
-            affectation = new Affectation();
-            for (Affectation affectation1 : affectations) {
-                System.out.println(affectation1);
-            }
+//            System.out.println("\n\n ============    J'ai exactement " + affectations.size() + " articles\n\n");
+//            affectation = new Affectation();
+//            for (Affectation affectation1 : affectations) {
+//                System.out.println(affectation1);
+//            }
         } catch (ServiceException ex) {
             Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -251,6 +251,7 @@ public class OrdreSortieBean implements Serializable{
             ordreSortie.setEtatType(EtatType.Encour);
             sortieService.saveOrUpdateOrdre(ordreSortie);
             ordreSortie = new OrdreSortie();
+            affectations = new ArrayList<>();
         } catch (ServiceException ex) {
             Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -298,6 +299,8 @@ public class OrdreSortieBean implements Serializable{
                 bonSortie.setOrdeSortie(o);
             }
             sortieService.saveOrUpdateBonSortie(bonSortie);
+            bonSortie = new BonSortie();
+            affectations = new ArrayList<>();
         } catch (ServiceException ex) {
             Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -314,6 +317,7 @@ public class OrdreSortieBean implements Serializable{
     }
     
     public String finirBon(){
+        if(bonSortie.getOrdeSortie().getEtatType() != EtatType.acheve){
         for (Affectation affectation1 : affectations) {
             try {
                 affectation1.setBonSortie(bonSortie);
@@ -322,7 +326,8 @@ public class OrdreSortieBean implements Serializable{
                 Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+        }
+        bonSortie = new BonSortie();
         affectations = new ArrayList<>();
         return "";
     }
@@ -348,6 +353,8 @@ public class OrdreSortieBean implements Serializable{
                 Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        bonSortie = new BonSortie();
+        affectations = new ArrayList<>();
     }
     
    public void produceOrdreSortie(){
@@ -372,6 +379,8 @@ public class OrdreSortieBean implements Serializable{
                 Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        bonSortie = new BonSortie();
+        affectations = new ArrayList<>();
     }
 
     public String getObjet() {

@@ -2,6 +2,7 @@ package com.cid.cidiomanagement;
 
 import com.cid.cidiomanagement.entities.Affectation;
 import com.cid.cidiomanagement.entities.Commande;
+import com.cid.cidiomanagement.entities.Utilisateur;
 import com.cid.cidiomanagement.service.ICommandeService;
 import com.cid.cidiomanagement.service.IDonneeService;
 import com.cid.cidiomanagement.service.IOrdreSortieService;
@@ -40,21 +41,21 @@ public class App {
 //        use.setEnabled(true);
 //        serv.saveOrUpdateUtilisateur(use);
         
-//        List <Utilisateur> user = serv.findAll();
-//        for (Utilisateur user1 : user) {
-//            System.out.println(user1);
-//        }
-         List<Affectation> affectations = sortiserv.findAllAffectationByOrdre(5L);
-         System.out.println(affectations);
-         
+        List <Utilisateur> user = serv.findAll();
+        for (Utilisateur user1 : user) {
+            System.out.println(user1);
+        }
+//         List<Affectation> affectations = sortiserv.findAllAffectationByOrdre(5L);
+//         System.out.println(affectations);
+//         
 //         System.out.println("Les articles");
 //         for (Affectation affectation : affectations) {
 //             System.out.println(affectation.getArticle());
 //        }
          
-         List<Affectation> affectations1 = mergeList(affectations);
-         System.out.println("Les affectations");
-         System.out.println(affectations1);
+//         List<Affectation> affectations1 = mergeList(affectations);
+//         System.out.println("Les affectations");
+//         System.out.println(affectations1);
 //         for (Affectation affectation : affectations1) {
 //             System.out.println(affectation.getArticle());
 //        }

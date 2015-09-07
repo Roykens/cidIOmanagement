@@ -12,5 +12,7 @@ public interface IUtilisateurService {
     public boolean findUtilisateurByLoginAndPassword(String login, String password) throws ServiceException;
     public Utilisateur saveOrUpdateUtilisateur(Utilisateur utilisateur) throws ServiceException;
     public List<Utilisateur> findAll() throws ServiceException;
+
+    public void deleteUtilisateur(Long id) throws ServiceException;
     
 }

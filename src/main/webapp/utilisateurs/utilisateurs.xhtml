@@ -48,15 +48,18 @@
                           width="400" showEffect="clip" hideEffect="explode" modal="true">  
                     <h:form id ="updatform">
                         <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="entree0" value="#{donneesBean.utilisateurChoisi.nomenclatureSommaire}"/> 
                             <h:outputText value="Nom"/> 
-                            <p:inputText  id="entree10" value="#{donneesBean.utilisateurChoisi.nom}"/> 
+                            <p:inputText  id="entree0" value="#{utilisateurBean.user.nom}"/> 
+                            <h:outputText value="Login"/> 
+                            <p:inputText  id="entree10" value="#{utilisateurBean.user.login}"/> 
+                            <h:outputText value="Mot de passe"/> 
+                            <p:inputText   value="#{utilisateurBean.user.password}"/> 
 
-                            <h:inputHidden  id="entree11" value="#{donneesBean.utilisateurChoisi.id}"/> 
+                            <h:inputHidden   value="#{utilisateurBean.user.id}"/>
+                            <h:inputHidden   value="#{utilisateurBean.user.version}"/>
 
                             <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Modifier" action="#{donneesBean.updateCategorie()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:utilisateurTable" />  
+                                <p:commandButton value="Modifier" action="#{utilisateurBean.saveOrUpdateUtilisateur()}"  oncomplete="PF('modifierDialog').hide()" icon="ui-icon-disk" update=":list:utilisateurTable" />  
                             </f:facet>
                             <f:facet name="footer">  
                                 <p:commandButton value="Initialiser" type="reset" />  
@@ -67,20 +70,23 @@
 
                 <p:confirmDialog  id="confirm" message="voulez vous vraiment supprimer?" showEffect="fade" widgetVar="cd" severity="alert" hideEffect="explode" >
                     <h:form id="supform">
-                        <h:inputHidden  id="entree11" value="#{donneesBean.utilisateurChoisi.id}"/>
-                        <p:commandButton value="Yes" action="#{donneesBean.deleteCategorie()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:utilisateurTable"/>
+                        <h:inputHidden   value="#{utilisateurBean.user.id}"/>
+                        <h:inputHidden   value="#{utilisateurBean.user.version}"/>
+                        <p:commandButton value="Yes" action="#{utilisateurBean.deleteUser()}"  oncomplete="PF('cd').hide()" icon="ui-icon-check" update=":list:utilisateurTable"/>
                         <p:commandButton value="No" onclick="PF('cd').hide()" icon="ui-icon-close" />
                     </h:form>
                 </p:confirmDialog>
-               <p:dialog id="affecter" header="ajouter une utilisateur" widgetVar="ajouter_dialog" resizable="false" width="400" showEffect="clip" hideEffect="explode" modal="true"> 
+               <p:dialog id="affecter" header="ajouter un utilisateur" widgetVar="ajouter_dialog" resizable="false" width="400" showEffect="clip" hideEffect="explode" modal="true"> 
                    <h:form id ="saveform">
                         <h:panelGrid id="display" columns="2" >  
-                            <h:outputText value="Nomenclature"/> 
-                            <p:inputText  id="en" value="#{donneesBean.utilisateur.nomenclatureSommaire}"/> 
                             <h:outputText value="Nom"/> 
-                            <p:inputText  id="fr" value="#{donneesBean.utilisateur.nom}"/> 
+                            <p:inputText   value="#{utilisateurBean.user.nom}"/> 
+                            <h:outputText value="Login"/> 
+                            <p:inputText   value="#{utilisateurBean.user.login}"/> 
+                            <h:outputText value="Mot de passe"/> 
+                            <p:inputText   value="#{utilisateurBean.user.password}"/> 
                             <f:facet name="footer"> <br/> 
-                                <p:commandButton value="Enregistrer" action="#{donneesBean.saveCategorie()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:utilisateurTable" />  
+                                <p:commandButton value="Enregistrer" action="#{utilisateurBean.saveOrUpdateUtilisateur()}"  oncomplete="PF('ajouter_dialog').hide()" icon="ui-icon-disk" update=":list:utilisateurTable" />  
                             </f:facet>
                             <f:facet name="footer">  
                                 <p:commandButton value="Annuler" onclick="PF('ajouter_dialog').hide()" />  
