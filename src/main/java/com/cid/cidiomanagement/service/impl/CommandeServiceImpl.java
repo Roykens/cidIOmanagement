@@ -7,7 +7,6 @@ import com.cid.cidiomanagement.dao.ICommandeDao;
 import com.cid.cidiomanagement.dao.IPrestataireDao;
 import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.BonCommande;
-import com.cid.cidiomanagement.entities.BonSortie;
 import com.cid.cidiomanagement.entities.Commande;
 import com.cid.cidiomanagement.entities.EtatType;
 import com.cid.cidiomanagement.entities.Prestataire;
@@ -22,12 +21,8 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPCellEvent;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPTableEvent;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.royken.generic.dao.DataAccessException;
 import java.io.OutputStream;
@@ -374,23 +369,23 @@ public class CommandeServiceImpl implements ICommandeService {
             float relatiewidth[] = {3, 5, 1, 3, 3};
             PdfPTable products = new PdfPTable(relatiewidth);
             products.setWidthPercentage(100);
-            products.addCell(createBonDefaultFHeader("Références", bf12));
-            products.addCell(createBonDefaultFHeader("Désignation,", bf12));
-            products.addCell(createBonDefaultFHeader("QTE", bf12));
-            products.addCell(createBonDefaultFHeader("P.U.", bf12));
-            products.addCell(createBonDefaultFHeader("PT", bf12));
+            products.addCell(Util.createBonDefaultFHeader("Références", bf12));
+            products.addCell(Util.createBonDefaultFHeader("Désignation,", bf12));
+            products.addCell(Util.createBonDefaultFHeader("QTE", bf12));
+            products.addCell(Util.createBonDefaultFHeader("P.U.", bf12));
+            products.addCell(Util.createBonDefaultFHeader("PT", bf12));
 
             double prixTotal = 0;
 
             for (Commande commande : commandes) {
 
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getReference(), bf10));
-                products.addCell(createBonDefaultFHeader(commande.getArticle().getDesignation(), bf10));
-                products.addCell(createBonDefaultFHeader(String.valueOf(commande.getNombre()), bf10));
-                products.addCell(createBonDefaultFHeader(commande.getPrixArticle() + "", bf10));
+                products.addCell(Util.createBonDefaultFHeader(commande.getArticle().getReference(), bf10));
+                products.addCell(Util.createBonDefaultFHeader(commande.getArticle().getDesignation(), bf10));
+                products.addCell(Util.createBonDefaultFHeader(String.valueOf(commande.getNombre()), bf10));
+                products.addCell(Util.createBonDefaultFHeader(commande.getPrixArticle() + "", bf10));
                 double prixTemp = commande.getNombre() * commande.getPrixArticle();
                 prixTotal += prixTemp;
-                products.addCell(createBonDefaultFHeader(prixTemp + "", bf10));
+                products.addCell(Util.createBonDefaultFHeader(prixTemp + "", bf10));
             }
 
             PdfPTable footer = new PdfPTable(relatiewidth);
@@ -974,49 +969,6 @@ public class CommandeServiceImpl implements ICommandeService {
         } catch (DocumentException | DataAccessException ex) {
             Logger.getLogger(CommandeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }
-
-    private PdfPCell createBonDefaultFHeader(String content, Font bf) {
-        PdfPCell cell = new PdfPCell(new Phrase(content, bf));
-        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPaddingBottom(4f);
-        cell.setPaddingTop(5f);
-        cell.setBorderWidth(0.01f);
-        cell.setBorderColor(BaseColor.BLACK);
-        return cell;
-
-    }
-
-    private PdfPCell createFooterCell(String content, Font bf) {
-
-        PdfPCell cell = new PdfPCell(new Phrase(content + ".................................................................................", bf));
-        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPaddingBottom(4f);
-        cell.setPaddingTop(5f);
-        cell.setBorderWidth(0.01f);
-        cell.setColspan(4);
-        cell.setBorderColorBottom(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        return cell;
-    }
-
-    private PdfPCell createFooterValueCell(String content, Font bf) {
-
-        PdfPCell cell = new PdfPCell(new Phrase(content, bf));
-        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPaddingBottom(4f);
-        cell.setPaddingTop(5f);
-        cell.setBorderWidth(0.01f);
-        cell.setBorderColorBottom(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        return cell;
     }
 
     private static Set<String> getCategories(List<Commande> commandes) {
@@ -1043,27 +995,6 @@ public class CommandeServiceImpl implements ICommandeService {
         return result;
     }
 
-    /*
-     cell.setCellEvent(app.new DottedCell());
-     cell.setBorder(PdfPCell.NO_BORDER);
-     */
-    private PdfPCell createDotedValueCell(String content, Font bf) {
-        PdfPCell cell = new PdfPCell(new Phrase(content, bf));
-        //cell.setBackgroundColor(new BaseColor(230, 230, 230));
-        cell.setCellEvent(this.new DottedCell2());
-        //cell.setBorder(PdfPCell.NO_BORDER);
-
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPaddingBottom(4f);
-        cell.setPaddingTop(5f);
-        cell.setBorderWidth(0.01f);
-        //cell.setBorderColorLeft(BaseColor.BLACK);
-        cell.setBorderColorBottom(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        return cell;
-    }
-
     @Override
     public void deleteBonCommande(Long idBon) throws ServiceException {
         try {
@@ -1079,55 +1010,5 @@ public class CommandeServiceImpl implements ICommandeService {
         }
     }
 
-    class DottedCell implements PdfPCellEvent {
-
-        @Override
-        public void cellLayout(PdfPCell cell, Rectangle position,
-                PdfContentByte[] canvases) {
-            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
-            canvas.setLineDash(1f, 1f);
-            canvas.rectangle(position.getLeft(), position.getBottom(),
-                    position.getWidth(), position.getHeight());
-            canvas.stroke();
-        }
-    }
-
-    class DottedCell2 implements PdfPCellEvent {
-
-        @Override
-        public void cellLayout(PdfPCell cell, Rectangle position,
-                PdfContentByte[] canvases) {
-            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
-            canvas.setLineDash(3f, 3f);
-            //canvas.moveTo(position.getLeft(), position.getTop());
-            canvas.lineTo(position.getRight(), position.getTop());
-            canvas.moveTo(position.getLeft(), position.getBottom());
-            canvas.lineTo(position.getRight(), position.getBottom());
-            canvas.stroke();
-        }
-    }
-
-    class DottedCells implements PdfPTableEvent {
-
-        @Override
-        public void tableLayout(PdfPTable table, float[][] widths,
-                float[] heights, int headerRows, int rowStart,
-                PdfContentByte[] canvases) {
-            PdfContentByte canvas = canvases[PdfPTable.LINECANVAS];
-            canvas.setLineDash(3f, 3f);
-            float llx = widths[0][0];
-            float urx = widths[0][widths.length];
-            for (int i = 0; i < heights.length; i++) {
-                canvas.moveTo(llx, heights[i]);
-                canvas.lineTo(urx, heights[i]);
-            }
-            for (int i = 0; i < widths.length; i++) {
-                for (int j = 0; j < widths[i].length; j++) {
-                    canvas.moveTo(widths[i][j], heights[i]);
-                    canvas.lineTo(widths[i][j], heights[i + 1]);
-                }
-            }
-            canvas.stroke();
-        }
-    }
+    
 }
