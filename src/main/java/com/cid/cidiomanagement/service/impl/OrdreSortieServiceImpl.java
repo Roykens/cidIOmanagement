@@ -865,7 +865,7 @@ public class OrdreSortieServiceImpl implements IOrdreSortieService {
             Chunk arete = new Chunk("Arrêté le présent ordre de sortie à ", bf1);
             String nomc = FrenchNumberToWords.convert(nombre);
             Chunk art = new Chunk(nombre + " (" + nomc.toUpperCase() + ")", bf1b);
-            Chunk article = new Chunk(" articles, évalués à la somme de: ", bf1);
+            Chunk article = new Chunk(" article(s), évalué(s) à la somme de: ", bf1);
             Chunk prixL = new Chunk(prixS.toUpperCase() + " FRANCS CFA", bf1b);
             p = new Paragraph();
             p.add(arete);

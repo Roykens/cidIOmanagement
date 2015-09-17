@@ -347,7 +347,7 @@ public class CommandeServiceImpl implements ICommandeService {
             doc.add(new Chunk("\n"));
             doc.add(new Chunk("Nom ou raison Sociale du Prestataire : ", bf12));
             doc.add(new Chunk(prestataire.getNom() + "\n", bf12));
-            doc.add(new Chunk("Adresse .....", bf12));
+            doc.add(new Chunk("Adresse . ", bf12));
             doc.add(new Chunk(prestataire.getAdresse(), bf12));
             //doc.add(new Chunk("  BP       ", bf12));
             //doc.add(new Chunk("  Douala       ", bf12));
@@ -369,8 +369,8 @@ public class CommandeServiceImpl implements ICommandeService {
             float relatiewidth[] = {3, 5, 1, 3, 3};
             PdfPTable products = new PdfPTable(relatiewidth);
             products.setWidthPercentage(100);
-            products.addCell(Util.createBonDefaultFHeader("Références", bf12));
-            products.addCell(Util.createBonDefaultFHeader("Désignation,", bf12));
+            products.addCell(Util.createBonDefaultFHeader("REFERENCES", bf12));
+            products.addCell(Util.createBonDefaultFHeader("DESIGNATION", bf12));
             products.addCell(Util.createBonDefaultFHeader("QTE", bf12));
             products.addCell(Util.createBonDefaultFHeader("P.U.", bf12));
             products.addCell(Util.createBonDefaultFHeader("PT", bf12));
@@ -385,7 +385,7 @@ public class CommandeServiceImpl implements ICommandeService {
                 products.addCell(Util.createBonDefaultFHeader(commande.getPrixArticle() + "", bf10));
                 double prixTemp = commande.getNombre() * commande.getPrixArticle();
                 prixTotal += prixTemp;
-                products.addCell(Util.createBonDefaultFHeader(prixTemp + "", bf10));
+                products.addCell(Util.createBonDefaultFHeader((int)Math.floor(prixTemp) + "", bf10));
             }
 
             PdfPTable footer = new PdfPTable(relatiewidth);
@@ -404,7 +404,8 @@ public class CommandeServiceImpl implements ICommandeService {
 
             // products.addCell(createFooterCell("Total HT", bf12));
             products.addCell(cell1);
-            to = new Chunk(prixTotal + "", bf10);
+            to = new Chunk((int) Math.floor(prixTotal) + "", bf10);
+            
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -434,7 +435,9 @@ public class CommandeServiceImpl implements ICommandeService {
             //products.addCell(createFooterCell("TVA 19.25%", bf12));
             products.addCell(cell1);
 
-            to = new Chunk(prixtva + "", bf10);
+            to = new Chunk((int) Math.floor(prixtva) + "", bf10);
+            
+            
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -450,6 +453,7 @@ public class CommandeServiceImpl implements ICommandeService {
             String air = "AIR " + bon.getPrestataire().getAir() + "% .................................................................................";
 
             to = new Chunk(air, bf10);
+            
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -466,7 +470,8 @@ public class CommandeServiceImpl implements ICommandeService {
 
             double prixAir = prixTotal * bon.getPrestataire().getAir() / 100;
 
-            to = new Chunk(prixAir + "", bf10);
+            to = new Chunk((int) Math.floor(prixAir) + "", bf10);
+            
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -494,7 +499,8 @@ public class CommandeServiceImpl implements ICommandeService {
 
             products.addCell(cell1);
 
-            to = new Chunk((prixTotal - prixAir) + "", bf10);
+            to = new Chunk((int) Math.floor((prixTotal - prixAir)) + "", bf10);
+            
             cell1 = new PdfPCell();
             cell1.addElement(to);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -584,7 +590,7 @@ public class CommandeServiceImpl implements ICommandeService {
 
     private void produceOrdreEntree(BonCommande bc, Document doc, String noFacture, Date dateFacture, int noOrdre, int noChapitre) {
         try {
-            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 8);
             Font bf12i = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
             Font bf10 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
@@ -904,7 +910,7 @@ public class CommandeServiceImpl implements ICommandeService {
             Chunk arete = new Chunk("Arrêté le présent ordre d'entrée à ", bf1);
             String nomc = FrenchNumberToWords.convert(nombre);
             Chunk art = new Chunk(nombre + " (" + nomc.toUpperCase() + ")", bf1b);
-            Chunk article = new Chunk(" articles, évalués à la somme de: ", bf1);
+            Chunk article = new Chunk(" article(s), évalué(s) à la somme de: ", bf1);
             Chunk prixL = new Chunk(prixS.toUpperCase() + " FRANCS CFA", bf1b);
             p = new Paragraph();
             p.add(arete);
