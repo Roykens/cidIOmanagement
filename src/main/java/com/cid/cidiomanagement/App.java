@@ -1,6 +1,7 @@
 package com.cid.cidiomanagement;
 
 import com.cid.cidiomanagement.entities.Affectation;
+import com.cid.cidiomanagement.entities.Article;
 import com.cid.cidiomanagement.entities.Commande;
 import com.cid.cidiomanagement.entities.Utilisateur;
 import com.cid.cidiomanagement.service.ICommandeService;
@@ -41,10 +42,31 @@ public class App {
 //        use.setEnabled(true);
 //        serv.saveOrUpdateUtilisateur(use);
         
-        List <Utilisateur> user = serv.findAll();
-        for (Utilisateur user1 : user) {
-            System.out.println(user1);
+//        List <Utilisateur> user = serv.findAll();
+//        for (Utilisateur user1 : user) {
+//            System.out.println(user1);
+//        }
+        List<Article> articles = service.findAllArticle();
+        for (Article article : articles) {
+            System.out.println(article);
         }
+        
+        
+        System.out.println("Test de range");
+        
+         List<Article> articles1 = service.findByRange(1, 3);
+        for (Article article : articles1) {
+            System.out.println(article);
+        }
+        
+        System.out.println("Test de count");
+        
+        Long zozo = service.countArticles();
+        System.out.println(zozo);
+        
+        System.out.println("Test de finder");
+        Article article = service.findArticleById(0L);
+        System.out.println(article);
 //         List<Affectation> affectations = sortiserv.findAllAffectationByOrdre(5L);
 //         System.out.println(affectations);
 //         

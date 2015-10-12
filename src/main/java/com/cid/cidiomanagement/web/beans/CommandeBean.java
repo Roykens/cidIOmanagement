@@ -280,6 +280,7 @@ public class CommandeBean implements Serializable {
             System.out.println(prestataire1);
             bonCommande.setPrestataire(prestataire1);
             System.out.println(bonCommande);
+            bonCommande.setId(null);
             commandeService.saveOrUpdateBon(bonCommande);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opération reussie", bonCommande.getObjet() + " a été enregistré "));
             bonCommande = new BonCommande();
@@ -310,7 +311,7 @@ public class CommandeBean implements Serializable {
             }
         }
             commandes =new ArrayList<>();
-            bonCommande = new BonCommande();
+            //bonCommande = new BonCommande();
     }
 
     public void produireOrdreEntree() {
@@ -333,7 +334,7 @@ public class CommandeBean implements Serializable {
             }
         }
         commandes = new ArrayList<>();
-        bonCommande = new BonCommande();
+      //  bonCommande = new BonCommande();
     }
 
     public int getNoOrdreEntree() {

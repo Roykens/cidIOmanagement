@@ -41,6 +41,10 @@ public interface IDonneeService extends Serializable{
     
     public List<Article> findAllArticle() throws ServiceException;
     
+    public List<Article> findByRange(int debut, int fin) throws ServiceException;
+    
+    public Long countArticles() throws ServiceException;
+    
     public List<Article> findArticleByCtegorie(Long idCategorie) throws ServiceException;
     
     public Article findByReference(String reference) throws ServiceException;

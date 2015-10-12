@@ -249,6 +249,7 @@ public class OrdreSortieBean implements Serializable{
     public String saveOrdre() {
         try {
             ordreSortie.setEtatType(EtatType.Encour);
+            ordreSortie.setId(null);
             sortieService.saveOrUpdateOrdre(ordreSortie);
             ordreSortie = new OrdreSortie();
             affectations = new ArrayList<>();
@@ -298,6 +299,7 @@ public class OrdreSortieBean implements Serializable{
                 System.out.println("\n\nJ'ai l'ordre =====================   " + o);
                 bonSortie.setOrdeSortie(o);
             }
+            bonSortie.setId(null);
             sortieService.saveOrUpdateBonSortie(bonSortie);
             bonSortie = new BonSortie();
             affectations = new ArrayList<>();
@@ -353,7 +355,7 @@ public class OrdreSortieBean implements Serializable{
                 Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        bonSortie = new BonSortie();
+        //bonSortie = new BonSortie();
         affectations = new ArrayList<>();
     }
     
@@ -379,7 +381,7 @@ public class OrdreSortieBean implements Serializable{
                 Logger.getLogger(OrdreSortieBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        bonSortie = new BonSortie();
+        //bonSortie = new BonSortie();
         affectations = new ArrayList<>();
     }
 

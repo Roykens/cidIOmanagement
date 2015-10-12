@@ -308,4 +308,24 @@ public class DonneeServiceImpl implements IDonneeService {
         return result;
     }
 
+    @Override
+    public List<Article> findByRange(int debut, int fin) throws ServiceException {
+        try {
+            return articleDao.findRange(debut, fin);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(DonneeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public Long countArticles() throws ServiceException {
+        try {
+            return articleDao.count();
+        } catch (DataAccessException ex) {
+            Logger.getLogger(DonneeServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1L;
+    }
+
 }
